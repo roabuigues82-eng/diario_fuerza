@@ -10,6 +10,9 @@ App web para registrar mis entrenamientos Full Body (lunes, miércoles y viernes
 - **Calorías**: comidas del día (las 6 del plan como botones rápidos + comidas propias), proteína, actividad en casa y en el trabajo, y **balance comido − gastado**. Avisa si gastas más de lo que comes y sugiere qué comida añadir para compensar.
 - **Historial**: editar o borrar sesiones, descargar/importar copias de seguridad en JSON (incluye rutina, calorías, actividad, peso y ajustes).
 - **Ajustes**: perfil (para calcular el gasto), editor de rutina (cambiar, añadir, quitar y reordenar ejercicios) y comidas favoritas.
+- **Avisos automáticos** al abrir la app: entreno del día, entrenos de la semana, si vas retrasada con la comida según la hora, balance de ayer, pesaje semanal, ajuste de calorías según la tendencia del peso (con botón para aplicarlo) y ejercicios estancados.
+- **Resumen de los últimos 7 días** en Progreso.
+- **Importa energía activa, pasos y peso de la app Salud del iPhone** mediante un Atajo.
 - **Instalable y funciona sin conexión** (PWA).
 
 ## Publicarla con GitHub Pages
@@ -55,3 +58,35 @@ Se edita desde la propia app en **Ajustes → Rutina**. La rutina original está
 ## Tecnologías
 
 HTML, CSS y JavaScript sin frameworks · [Chart.js](https://www.chartjs.org/) para las gráficas · localStorage · Service Worker.
+
+## Conectar con Salud (iPhone)
+
+Una app web no puede leer Salud directamente, así que se usa un Atajo que copia tus datos y la app los pega.
+
+**Crear el atajo «Salud → Diario»** (app Atajos → **+**):
+
+1. **Buscar muestras de salud** → Tipo: *Energía activa* · Fecha de inicio: *es hoy*.
+2. **Calcular estadísticas** → *Suma* de *Muestras de salud*.
+3. **Redondear número** → a *Unidades*.
+4. Repite 1–3 con Tipo: *Pasos*.
+5. **Texto** → escribe `activa=` + variable *Número redondeado* (el 1.º) + `;pasos=` + variable *Número redondeado* (el 2.º). Queda así: `activa=512;pasos=8423`
+6. **Copiar al portapapeles** → *Texto*.
+7. **Mostrar notificación** → «Datos copiados: abre Diario de Fuerza y pulsa Pegar datos de Salud».
+
+La primera vez pedirá permiso para leer Salud. Opcional: añade `;peso=` con tu último peso (Buscar muestras de salud → Tipo *Peso* · Ordenar por *Fecha de inicio* · *Más reciente primero* · Limitar a 1).
+
+**Usarlo**: ejecuta el atajo (desde un widget o automatización a las 21:30) → abre la app → *Calorías* → **Pegar datos de Salud**. Al importar energía activa, la app pasa a usar Salud como fuente de actividad (cámbialo en Ajustes → Perfil). Si llevas Apple Watch en el gimnasio, marca la casilla para no contar el gimnasio dos veces.
+
+> Si usas la app desde Safari (sin instalar), el atajo puede terminar con **Abrir URL** `https://TU-USUARIO.github.io/REPO/?activa=…&pasos=…` y se importa sola.
+
+## Recordatorios en el iPhone
+
+Atajos → **Automatización** → **+** → *Hora del día* → elige hora y días → *Ejecutar inmediatamente* → acción **Mostrar notificación**. Ejemplos:
+
+| Cuándo | Mensaje |
+|---|---|
+| L, X, V · 17:00 | 🏋️ Hoy toca gimnasio |
+| Diario · 10:30 | 🥤 Batido de media mañana |
+| Diario · 16:30 | 🍓 Merienda pre-entreno |
+| Lunes · 07:45 | ⚖️ Pésate en ayunas y apúntalo |
+| Diario · 21:30 | Ejecutar el atajo *Salud → Diario* (en vez de notificación, acción **Ejecutar atajo**) |
