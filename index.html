@@ -36,8 +36,9 @@ nav button.on{background:var(--acc);color:var(--acc-ink);border-color:var(--acc)
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:14px;margin-bottom:12px}
 .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted)}
-input[type=date],input[type=number],input[type=text],select,textarea{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--text);outline:none;min-width:0}
+input[type=date],input[type=number],input[type=text],input[type=search],select,textarea{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--text);outline:none;min-width:0}
 input:focus,select:focus,textarea:focus{border-color:var(--acc)}
+input[type=search]{-webkit-appearance:none;appearance:none;font-size:16px}
 textarea{width:100%;min-height:64px;resize:vertical}
 .seg{display:flex;gap:6px;flex-wrap:wrap}
 .seg button{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 14px;cursor:pointer;font-weight:600}
@@ -205,6 +206,177 @@ const ACTIVIDADES = [
 const DEFAULT_PERFIL = {sexo:"",edad:"",altura:170,pesoRef:56,factor:1.2,objKcal:2400,objProt:110,superavit:0,gymMin:60,gymMet:5,fuenteAct:"manual",relojGym:false,ultimoAjuste:""};
 // Horario del plan de comidas (para avisar si vas retrasada con la comida)
 const PLAN_HORAS = [["f1",7.5],["f2",10.5],["f3",13.5],["f4",16.5],["f5",20.5],["f6",22.5]];
+
+/* =====================================================================
+   BASE DE ALIMENTOS (valores aproximados por 100 g, tablas españolas)
+   [nombre, kcal/100g, proteína/100g, "ración:gramos|...", palabras clave]
+   ===================================================================== */
+const FOODS_RAW = [
+  // Pan, desayuno y bollería
+  ["Pan de barra blanco",270,9,"trozo pequeño:30|trozo para bocadillo (⅓ barra):80|media barra:125","pan baguette chapata"],
+  ["Pan de barra integral",245,9,"trozo pequeño:30|trozo para bocadillo (⅓ barra):80","pan"],
+  ["Pan de molde blanco",265,8,"rebanada:25","pan sandwich bimbo"],
+  ["Pan de molde integral",250,10,"rebanada:28","pan sandwich bimbo"],
+  ["Tostadas de paquete (biscotes)",400,11,"unidad:8","pan tostado"],
+  ["Tortilla de trigo (wrap)",310,8.5,"unidad grande:60|unidad pequeña:40","fajita burrito"],
+  ["Pan de pita",275,9,"unidad:60",""],
+  ["Copos de avena",370,13,"cucharada:10|bol (40 g):40","avena porridge"],
+  ["Cereales de desayuno",375,7,"bol pequeño:30|bol normal:40","corn flakes choco"],
+  ["Muesli",370,10,"bol:50","cereales"],
+  ["Galletas María",440,7,"unidad:6",""],
+  ["Galletas tipo digestive",480,7,"unidad:15","galleta"],
+  ["Croissant",410,8,"unidad:60","cruasan bolleria"],
+  ["Magdalena",450,6,"unidad:30","bolleria"],
+  ["Donut",420,6,"unidad:55","bolleria rosquilla"],
+  ["Churros",380,5,"unidad:20","porras"],
+  ["Barrita de cereales",400,6,"unidad:25",""],
+  ["Barrita de proteínas",360,33,"unidad:60","proteina"],
+  // Lácteos y huevos
+  ["Leche entera",63,3.1,"vaso:250|taza:200|chorrito para café:50","leche"],
+  ["Leche semidesnatada",46,3.2,"vaso:250|taza:200|chorrito para café:50","leche"],
+  ["Leche desnatada",35,3.3,"vaso:250|taza:200|chorrito para café:50","leche"],
+  ["Bebida de avena",45,1,"vaso:250","leche vegetal"],
+  ["Bebida de soja",40,3.3,"vaso:250","leche vegetal"],
+  ["Café con leche entera",47,2.4,"taza:200","cafe cortado"],
+  ["Café solo",2,0.1,"taza:50","cafe expreso"],
+  ["Cola Cao / cacao soluble",380,5.6,"cucharada colmada:15|cucharadita:7","cacao nesquik"],
+  ["Cacao puro en polvo",360,20,"cucharada:10","cacao"],
+  ["Yogur natural",60,3.5,"unidad:125","yogurt"],
+  ["Yogur de sabores / azucarado",95,3.5,"unidad:125","yogurt"],
+  ["Yogur griego natural",140,3.5,"unidad:125","yogurt"],
+  ["Skyr natural",63,11,"unidad:150","yogur proteico"],
+  ["Yogur alto en proteínas",60,9.5,"unidad:160","yopro proteico"],
+  ["Queso fresco batido 0%",47,8,"cucharada:30|tarrina pequeña:125","quark"],
+  ["Queso fresco (Burgos)",185,13,"taco:40|tarrina individual:75","queso"],
+  ["Queso curado o semicurado",390,25,"loncha/cuña:25","queso manchego"],
+  ["Queso en lonchas (edam, gouda)",340,25,"loncha:20","queso sandwich"],
+  ["Queso rallado",400,28,"cucharada:10|puñado:20","queso"],
+  ["Mozzarella",250,18,"bola:125|media bola:60","queso"],
+  ["Mantequilla",740,0.7,"cucharadita:5|porción individual:10",""],
+  ["Huevo",145,12.5,"unidad (mediano):53|unidad (grande):63","huevos cocido"],
+  ["Clara de huevo",50,11,"unidad:33","huevo"],
+  ["Huevo frito",195,13.6,"unidad:55","huevos"],
+  ["Tortilla francesa",190,11,"de 1 huevo:65|de 2 huevos:120","huevos"],
+  ["Huevos revueltos",170,11,"de 2 huevos:120|de 3 huevos:170","huevos"],
+  // Carnes, embutidos y pescados
+  ["Pechuga de pollo a la plancha",165,31,"filete:120|pechuga entera:200","pollo"],
+  ["Muslo de pollo asado (sin hueso)",210,26,"unidad:100","pollo contramuslo"],
+  ["Pollo asado con piel",215,26,"cuarto de pollo:180","pollo"],
+  ["Filete de ternera a la plancha",190,29,"filete:150","carne ternera"],
+  ["Lomo de cerdo a la plancha",190,30,"filete:60|dos filetes:120","carne cerdo"],
+  ["Carne picada cocinada",260,24,"ración:120","carne"],
+  ["Hamburguesa de ternera (solo carne)",250,23,"unidad:100","carne burger"],
+  ["Salchichas tipo Frankfurt",270,12,"unidad:40","salchicha"],
+  ["Pechuga de pavo en lonchas",100,18,"loncha:15|paquete pequeño:100","pavo fiambre embutido"],
+  ["Jamón cocido (york)",105,19,"loncha:20","jamon dulce fiambre"],
+  ["Jamón serrano",240,31,"loncha:15|ración:50","jamon iberico"],
+  ["Chorizo",450,22,"rodaja:8|ración:50","embutido"],
+  ["Atún en lata al natural",110,25,"lata pequeña:56|lata grande:80","atun"],
+  ["Atún en lata en aceite (escurrido)",200,25,"lata pequeña:56|lata grande:80","atun"],
+  ["Sardinas en lata",210,24,"lata:65","sardina"],
+  ["Salmón a la plancha",210,23,"filete:150","pescado"],
+  ["Merluza o pescado blanco a la plancha",90,19,"filete:150","pescado bacalao"],
+  ["Gambas o langostinos cocidos",100,22,"ración:100","marisco"],
+  ["Surimi (palitos)",100,7,"palito:15","cangrejo"],
+  // Arroz, pasta, patata y legumbres (cocidos)
+  ["Arroz blanco cocido",130,2.7,"plato:200|guarnición:120|vasito microondas:125","arroz"],
+  ["Arroz integral cocido",123,2.7,"plato:200|guarnición:120|vasito microondas:125","arroz"],
+  ["Pasta cocida (sin salsa)",158,5.8,"plato:220|guarnición:120","macarrones espaguetis fideos"],
+  ["Patata cocida",85,2,"unidad mediana:150","patata papa"],
+  ["Patatas fritas caseras",300,3.5,"ración:120|ración pequeña:70","patatas papas"],
+  ["Patatas fritas de bolsa",540,6.5,"bolsa pequeña:40|puñado:15","patatas chips snack"],
+  ["Quinoa cocida",120,4.4,"ración:150",""],
+  ["Cuscús cocido",112,3.8,"ración:150","cous"],
+  // Platos preparados
+  ["Lentejas estofadas (con chorizo/verduras)",115,6.5,"plato normal:350|plato pequeño:250|plato grande:450","legumbres guiso"],
+  ["Cocido / potaje de garbanzos",120,6.5,"plato normal:350|plato pequeño:250|plato grande:450","garbanzos guiso"],
+  ["Fabada",150,8,"plato normal:350|plato pequeño:250","alubias guiso"],
+  ["Paella mixta",155,8,"plato normal:300|plato pequeño:200|plato grande:400","arroz"],
+  ["Arroz con pollo",150,9,"plato normal:300|plato pequeño:200","arroz"],
+  ["Arroz a la cubana",155,4.5,"plato normal:350","arroz huevo tomate"],
+  ["Macarrones con tomate",140,5,"plato normal:300|plato pequeño:200|plato grande:400","pasta"],
+  ["Espaguetis a la boloñesa",150,7.5,"plato normal:300|plato pequeño:200|plato grande:400","pasta macarrones carne"],
+  ["Ensalada de pasta",150,5,"plato:250","pasta"],
+  ["Tortilla de patatas",195,6.5,"pincho:120|ración:200","tortilla española"],
+  ["Croquetas",240,6,"unidad:30","croqueta jamon pollo"],
+  ["Empanadilla",300,8,"unidad:50","empanada"],
+  ["Pizza",260,11,"porción:110|media pizza:250|pizza entera:500","pizza"],
+  ["Hamburguesa completa (con pan)",250,13,"unidad:230","burger"],
+  ["Kebab / dürüm",220,12,"unidad:350","doner"],
+  ["Bocadillo de jamón serrano",283,14.8,"unidad:145","bocata"],
+  ["Bocadillo de tortilla de patatas",229,7.6,"unidad:220","bocata"],
+  ["Bocadillo de atún",235,13.5,"unidad:170","bocata"],
+  ["Sándwich mixto",273,13.5,"unidad:95","sandwich bikini"],
+  ["Ensaladilla rusa",160,3,"ración:200","ensalada"],
+  ["Ensalada mixta (sin aliñar)",20,1,"plato:200","lechuga tomate"],
+  ["Pisto",80,1.5,"ración:200","verduras"],
+  ["Crema o puré de verduras",50,1.5,"plato:300","sopa calabacin"],
+  ["Gazpacho",50,1,"vaso:250","salmorejo"],
+  ["Sopa de fideos",35,2,"plato:300","caldo"],
+  ["Filete empanado de pollo",250,20,"unidad:120","pollo empanado"],
+  ["Calamares a la romana",220,12,"ración:150","rabas"],
+  ["Albóndigas en salsa",200,12,"unidad:30|ración (6 uds):180","carne"],
+  ["Huevos rotos con jamón",220,9,"plato:300","patatas"],
+  ["Patatas bravas",190,2.5,"ración:200","patatas"],
+  ["Sushi",150,6,"pieza:30|bandeja (8 piezas):240","japones"],
+  ["Hummus",250,7,"cucharada:30","garbanzos"],
+  ["Lentejas cocidas (solas, de bote)",115,9,"ración:200","legumbres"],
+  ["Garbanzos cocidos (solos, de bote)",139,7.6,"ración:150","legumbres"],
+  ["Alubias cocidas (solas, de bote)",110,7.5,"ración:150","legumbres judias"],
+  // Fruta y verdura
+  ["Plátano",94,1.2,"unidad mediana:120|unidad grande:150","banana"],
+  ["Manzana",52,0.3,"unidad mediana:170","fruta"],
+  ["Pera",55,0.4,"unidad mediana:170","fruta"],
+  ["Naranja",45,1,"unidad mediana:150","fruta"],
+  ["Mandarina",45,0.8,"unidad:70","fruta"],
+  ["Kiwi",60,1.1,"unidad:75","fruta"],
+  ["Uvas",70,0.6,"puñado:80|racimo:150","fruta"],
+  ["Fresas",33,0.7,"ración (taza):150","fruta"],
+  ["Melocotón",40,0.9,"unidad:150","fruta"],
+  ["Piña",50,0.5,"rodaja:100","fruta"],
+  ["Sandía",30,0.6,"tajada:250","fruta"],
+  ["Melón",34,0.8,"tajada:200","fruta"],
+  ["Dátiles",280,2.5,"unidad:8","fruta seca"],
+  ["Pasas",300,3,"puñado:30","fruta seca"],
+  ["Aguacate",160,2,"medio:70|entero:140","palta"],
+  ["Tomate",18,0.9,"unidad:150","verdura ensalada"],
+  ["Brócoli cocido",35,2.4,"ración:150","verdura brocoli"],
+  ["Judías verdes cocidas",30,1.8,"ración:200","verdura"],
+  ["Zanahoria",41,0.9,"unidad:80","verdura"],
+  // Grasas, frutos secos, dulces y salsas
+  ["Aceite de oliva",900,0,"cucharada:10|cucharadita:4|chorrito (ensalada/tostada):7","aove aceite"],
+  ["Crema de cacahuete",600,25,"cucharada:16|cucharadita:7","mantequilla de cacahuete"],
+  ["Cacahuetes",590,25,"puñado:30","frutos secos mani"],
+  ["Almendras",600,21,"puñado:30|unidad:1.2","frutos secos"],
+  ["Nueces",650,15,"puñado:30|unidad:5","frutos secos"],
+  ["Pipas de girasol peladas",580,20,"puñado:25","frutos secos"],
+  ["Frutos secos variados",600,18,"puñado:30","frutos secos"],
+  ["Chocolate con leche",540,7,"onza:7|tableta (100 g):100","chocolate"],
+  ["Chocolate negro 70%",580,8,"onza:7","chocolate"],
+  ["Crema de cacao (Nutella)",540,6,"cucharada:15|cucharadita:7","nocilla"],
+  ["Miel",305,0.3,"cucharada:20|cucharadita:7",""],
+  ["Mermelada",250,0.4,"cucharada:15",""],
+  ["Azúcar",400,0,"cucharadita / sobre:8","azucar"],
+  ["Mayonesa",700,1,"cucharada:15","salsa"],
+  ["Ketchup",110,1.2,"cucharada:15","salsa tomate"],
+  ["Helado",200,3.5,"bola:60|tarrina pequeña:100","postre"],
+  // Bebidas
+  ["Zumo de naranja",45,0.7,"vaso:200","zumo"],
+  ["Refresco azucarado (cola, naranja)",42,0,"lata:330|vaso:200","coca cola fanta"],
+  ["Refresco zero",1,0,"lata:330","coca cola light"],
+  ["Cerveza",43,0.4,"caña:200|tercio:330","birra"],
+  ["Cerveza sin alcohol",25,0.3,"caña:200|tercio:330","birra"],
+  ["Vino",85,0.1,"copa:150","vino tinto blanco"],
+  ["Bebida isotónica",25,0,"botella:500","aquarius"],
+  ["Proteína en polvo (whey)",380,75,"cacito:30","batido proteina"]
+];
+const norm=s=>String(s??"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"");
+const FOODS=FOODS_RAW.map(([n,k,p,por,al],i)=>({id:"a"+i,n,k,p,por:por.split("|").map(x=>{const j=x.lastIndexOf(":"); return {l:x.slice(0,j),g:+x.slice(j+1)};}),s:norm(n+" "+(al||""))}));
+function buscarAlimentos(q){
+  const w=norm(q).trim().split(/\s+/).filter(Boolean); if(!w.length) return [];
+  return FOODS.filter(f=>w.every(x=>f.s.includes(x)))
+    .sort((a,b)=>(norm(a.n).startsWith(w[0])?0:1)-(norm(b.n).startsWith(w[0])?0:1)||(+a.id.slice(1))-(+b.id.slice(1))).slice(0,12);
+}
 
 /* =====================================================================
    UTILIDADES
@@ -477,7 +649,13 @@ let calFecha=hoy();
 /* Datos de Salud (iPhone): el Atajo genera un texto tipo "activa=512;pasos=8423;peso=56,4" */
 function parseSalud(text){
   const out={};
-  String(text||"").split(/[;&?\n\r]+/).forEach(p=>{ const m=p.match(/^\s*(activa|pasos|peso|fecha)\s*[=:]\s*(.+?)\s*$/i); if(m) out[m[1].toLowerCase()]=m[2]; });
+  const txt=String(text||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/\u00a0/g," ");
+  const re=/(energia\s*activa|activa|pasos|peso|fecha)\s*[=:]\s*([^;&\n\r]+)/gi; let m;
+  while((m=re.exec(txt))){ let k=m[1].toLowerCase(); if(k.includes("activa")) k="activa"; out[k]=m[2].trim(); }
+  if(!Object.keys(out).length){ // sin etiquetas: "512 8423" o "512\n8423" → activa y pasos
+    const nums=txt.match(/\d[\d.,]*/g)||[];
+    if(nums.length===2){ out.activa=nums[0]; out.pasos=nums[1]; }
+  }
   const r={fecha:/^\d{4}-\d{2}-\d{2}$/.test(out.fecha||"")?out.fecha:hoy()};
   if(out.activa!=null){ const v=parseNumES(out.activa); if(v!=null&&v>=0&&v<10000) r.activa=Math.round(v); }
   if(out.pasos!=null){ const v=parseNumES(out.pasos); if(v!=null&&v>=0&&v<200000) r.pasos=Math.round(v); }
@@ -494,9 +672,16 @@ function applySalud(r){
   if(r.activa!=null&&D.perfil.fuenteAct!=="salud"){ D.perfil.fuenteAct="salud"; cambio=true; }
   return cambio;
 }
-function importSaludText(t){
-  const r=parseSalud(t);
-  if(!r){ toast("No encuentro datos de Salud en ese texto",true); return false; }
+function importSaludText(t0){
+  const t=t0; const r=parseSalud(t);
+  if(!r){
+    toast("No encuentro datos de Salud en ese texto",true);
+    const box=$("#s-manual"); if(box){ box.classList.remove("hidden");
+      let info=$("#s-leido"); if(!info){ info=document.createElement("div"); info.id="s-leido"; info.className="note"; info.style.marginTop="8px"; box.appendChild(info); }
+      const t=String(t0||"").trim();
+      info.textContent = t ? `He leído del portapapeles: «${t.slice(0,160)}${t.length>160?"…":""}». Tiene que parecerse a: activa=512;pasos=8423` : "El portapapeles está vacío: ejecuta antes el atajo Salud → Diario."; }
+    return false;
+  }
   const cambio=applySalud(r); calFecha=r.fecha; commit();
   const partes=[r.activa!=null?`${fmtK(r.activa)} kcal activas`:"",r.pasos!=null?`${fmtK(r.pasos)} pasos`:"",r.peso!=null?`${fmtKg(r.peso)} kg`:""].filter(Boolean);
   toast("Salud: "+partes.join(" · ")+(cambio?" (actividad ahora desde Salud)":""));
@@ -571,17 +756,24 @@ function renderCal(){
     }
   }
 
-  // Comidas
-  h+=`<div class="card"><div class="h2">Comidas</div>
-    <div class="note" style="margin-bottom:8px">Toca para añadir:</div>
-    <div>${D.favoritos.map(f=>`<span class="pill" data-addfav="${esc(f.id)}">＋ ${esc(f.nombre)} <small>${fmtK(f.kcal)} kcal · ${fmtK(f.prot)} g</small></span>`).join("")||'<span class="note">No tienes comidas favoritas.</span>'}</div>
-    <div style="margin-top:8px">${d.comidas.map(x=>`<div class="li"><div>${esc(x.nombre)}<div class="m">${fmtK(x.kcal)} kcal · ${fmtK(x.prot||0)} g proteína</div></div><button class="btn danger sm" data-delcom="${esc(x.id)}">✕</button></div>`).join("")||'<div class="empty" style="padding:12px">Nada apuntado todavía.</div>'}</div>
-    <details style="margin-top:10px"><summary class="note" style="cursor:pointer">Añadir otra comida</summary>
+  // Comidas del día
+  h+=`<div class="card"><div class="h2">Comidas de ${esHoy?"hoy":fmtF(calFecha)}</div>
+    ${d.comidas.map(x=>`<div class="li"><div>${esc(x.nombre)}<div class="m">${fmtK(x.kcal)} kcal · ${fmtK(x.prot||0)} g proteína</div></div><button class="btn danger sm" data-delcom="${esc(x.id)}">✕</button></div>`).join("")||'<div class="empty" style="padding:12px">Nada apuntado todavía.</div>'}
+  </div>
+  <div class="card" id="food-card"><div class="h2">Añadir comida</div>
+    <div class="note" style="margin-bottom:8px">Escribe lo que has comido y elige cuánto: <b>la app calcula las calorías</b>.</div>
+    <input type="search" id="food-q" placeholder="Ej.: lentejas, pan, yogur, pizza…" autocomplete="off" style="width:100%">
+    <div id="food-res"></div>
+    <div id="food-sel"></div>
+    <div id="food-basket"></div>
+    <div style="margin-top:14px"><div class="note" style="margin-bottom:6px">Tus comidas rápidas (un toque y se apunta):</div>
+      ${D.favoritos.map(f=>`<span class="pill" data-addfav="${esc(f.id)}">＋ ${esc(f.nombre)} <small>${fmtK(f.kcal)} kcal</small></span>`).join("")||'<span class="note">Todavía no tienes. Al apuntar un plato puedes guardarlo como comida rápida.</span>'}</div>
+    <details style="margin-top:10px"><summary class="note" style="cursor:pointer">¿No está en la lista? Escribe tú las calorías</summary>
       <div class="grid3" style="margin-top:10px">
         <label class="f" style="grid-column:1/-1">Nombre<input type="text" id="c-nombre" placeholder="Ej. Bocadillo de pollo"></label>
         <label class="f">kcal<input type="number" inputmode="numeric" id="c-kcal"></label>
         <label class="f">Proteína (g)<input type="number" inputmode="decimal" id="c-prot"></label>
-        <label class="f" style="justify-content:flex-end"><span><input type="checkbox" id="c-fav"> Guardar como favorita</span></label>
+        <label class="f" style="justify-content:flex-end"><span><input type="checkbox" id="c-fav"> Guardar como rápida</span></label>
       </div>
       <button class="btn pri" id="c-add" style="margin-top:10px">Añadir comida</button>
     </details>
@@ -623,6 +815,7 @@ function renderCal(){
   h+=`<div class="card"><div class="h2">Últimos 14 días</div><div class="chart-box"><canvas id="c-cal"></canvas></div>
     <div class="note" style="margin-top:8px">Las barras verdes deben quedar por encima de la línea naranja: eso significa que comes más de lo que gastas.</div></div>`;
   $("#tab-calorias").innerHTML=h;
+  renderFoodRes(); renderFoodSel(); renderBasket();
   updateActPreview();
 
   const days=Array.from({length:14},(_,i)=>addDays(hoy(),i-13));
@@ -632,6 +825,89 @@ function renderCal(){
     {type:"line",label:"Gastado",data:cs.map(x=>x.gasto==null?null:Math.round(x.gasto)),borderColor:"#ff8a3d",backgroundColor:"#ff8a3d",tension:.25,pointRadius:3,order:1}
   ]},options:baseOpts("kcal")});
 }
+/* ---------- Buscador de alimentos y "Tu plato" ---------- */
+let foodSel=null, foodPorc=0, foodCant=1, foodGr=100, basket=[];
+function foodAmount(){
+  const f=FOODS.find(x=>x.id===foodSel); if(!f) return null;
+  const g=foodPorc==="g"?(num(foodGr)||0):f.por[foodPorc].g*foodCant;
+  const label=foodPorc==="g"?`${fmtK(g)} g`:(foodCant===1?`1 ${f.por[foodPorc].l}`:`${fmtKg(foodCant)} × ${f.por[foodPorc].l}`);
+  return {n:f.n,label,g:Math.round(g),kcal:Math.round(f.k*g/100),prot:r1(f.p*g/100)};
+}
+function recientes(){
+  const out=[], seen=new Set();
+  Object.keys(D.dias).sort().reverse().forEach(f=>{
+    [...(D.dias[f].comidas||[])].reverse().forEach(c=>(c.items||[]).forEach(it=>{
+      const k=it.n+"|"+it.label; if(!seen.has(k)&&out.length<8){ seen.add(k); out.push(it); }
+    }));
+  });
+  return out;
+}
+function renderFoodRes(){
+  const box=$("#food-res"); if(!box) return;
+  const q=$("#food-q").value;
+  if(!q.trim()){
+    const rec=recientes();
+    box.innerHTML=rec.length?`<div class="note" style="margin:10px 0 6px">Usados hace poco (toca para añadir al plato):</div>${rec.map((it,i)=>`<span class="pill" data-recent="${i}">＋ ${esc(it.n)} · ${esc(it.label)} <small>${fmtK(it.kcal)} kcal</small></span>`).join("")}`:"";
+    return;
+  }
+  const res=buscarAlimentos(q);
+  box.innerHTML=res.length?`<div style="margin-top:8px">${res.map(f=>`<div class="li" data-food="${f.id}" style="cursor:pointer"><div>${esc(f.n)}<div class="m">${esc(f.por[0].l)} ≈ ${fmtK(f.k*f.por[0].g/100)} kcal · ${fmtK(f.p*f.por[0].g/100)} g prot.</div></div><span class="btn sm">Elegir</span></div>`).join("")}</div>`
+    :`<div class="note" style="margin-top:10px">No lo encuentro. Prueba con otra palabra (por ejemplo "pollo" o "arroz") o usa "¿No está en la lista?".</div>`;
+}
+function renderFoodSel(){
+  const box=$("#food-sel"); if(!box) return;
+  const f=FOODS.find(x=>x.id===foodSel); if(!f){ box.innerHTML=""; return; }
+  box.innerHTML=`<div class="ed-ex" style="margin-top:10px">
+    <div class="row" style="justify-content:space-between"><b style="font-size:17px">${esc(f.n)}</b><button class="btn sm" data-fclose="1">✕</button></div>
+    <div class="note" style="margin-top:6px">¿Cuánto has comido?</div>
+    <div class="seg" style="margin:6px 0 10px">${f.por.map((p,i)=>`<button data-porc="${i}" class="${foodPorc===i?"on":""}">${esc(p.l)}</button>`).join("")}<button data-porc="g" class="${foodPorc==="g"?"on":""}">En gramos</button></div>
+    ${foodPorc==="g"
+      ?`<label class="f">Gramos<input type="number" inputmode="numeric" id="food-g" value="${esc(foodGr)}" style="width:140px"></label>`
+      :`<div class="row"><button class="btn" data-cant="-" style="font-size:20px;width:46px">−</button><b style="font-size:24px;min-width:44px;text-align:center">${fmtKg(foodCant)}</b><button class="btn" data-cant="+" style="font-size:20px;width:46px">+</button><span class="note">${esc(f.por[foodPorc].l)} (${fmtK(f.por[foodPorc].g)} g)</span></div>`}
+    <div id="food-tot" style="font-family:'Barlow Condensed';font-size:26px;font-weight:700;margin:10px 0"></div>
+    <button class="btn pri full" data-fadd="1">＋ Añadir al plato</button>
+  </div>`;
+  updateFoodTot();
+}
+function updateFoodTot(){ const a=foodAmount(), t=$("#food-tot"); if(a&&t) t.innerHTML=`${fmtK(a.kcal)} kcal <span style="font-size:18px;color:var(--muted)">· ${fmtKg(a.prot)} g proteína</span>`; }
+function renderBasket(){
+  const box=$("#food-basket"); if(!box) return;
+  if(!basket.length){ box.innerHTML=""; return; }
+  const k=basket.reduce((a,x)=>a+x.kcal,0), pr=basket.reduce((a,x)=>a+x.prot,0);
+  box.innerHTML=`<div class="ed-ex" style="margin-top:12px;border-color:var(--acc)">
+    <div class="h2" style="margin-bottom:4px">Tu plato</div>
+    ${basket.map((x,i)=>`<div class="li"><div>${esc(x.n)}<div class="m">${esc(x.label)} · ${fmtK(x.kcal)} kcal · ${fmtKg(x.prot)} g</div></div><button class="btn danger sm" data-delbask="${i}">✕</button></div>`).join("")}
+    <div class="row" style="justify-content:space-between;margin:8px 0"><b>Total</b><b>${fmtK(k)} kcal · ${fmtK(pr)} g proteína</b></div>
+    <div class="note">¿Te falta algo? Búscalo arriba y se suma a este plato.</div>
+    <label class="f" style="margin-top:8px">Nombre (opcional)<input type="text" id="bask-name" placeholder="Ej.: Mi desayuno"></label>
+    <label class="note" style="display:block;margin:8px 0"><input type="checkbox" id="bask-fav"> Guardar como comida rápida para la próxima vez</label>
+    <button class="btn pri big full" data-bsave="1">Apuntar comida · ${fmtK(k)} kcal</button>
+  </div>`;
+}
+$("#tab-calorias").addEventListener("input",e=>{
+  if(e.target.id==="food-q"){ foodSel=null; renderFoodSel(); renderFoodRes(); }
+  else if(e.target.id==="food-g"){ foodGr=e.target.value; updateFoodTot(); }
+});
+$("#tab-calorias").addEventListener("click",e=>{
+  const t=e.target.closest("[data-food],[data-porc],[data-cant],[data-fadd],[data-fclose],[data-recent],[data-delbask],[data-bsave]"); if(!t) return;
+  if(t.dataset.food){ foodSel=t.dataset.food; foodPorc=0; foodCant=1; foodGr=FOODS.find(x=>x.id===foodSel).por[0].g; $("#food-res").innerHTML=""; renderFoodSel(); $("#food-sel").scrollIntoView({block:"nearest",behavior:"smooth"}); }
+  else if(t.dataset.porc!==undefined){ foodPorc=t.dataset.porc==="g"?"g":+t.dataset.porc; renderFoodSel(); }
+  else if(t.dataset.cant){ foodCant=Math.max(0.5,r1(foodCant+(t.dataset.cant==="+"?0.5:-0.5))); renderFoodSel(); }
+  else if(t.dataset.fclose){ foodSel=null; renderFoodSel(); renderFoodRes(); }
+  else if(t.dataset.fadd){ const a=foodAmount(); if(!a||a.g<=0){ toast("Indica la cantidad",true); return; } basket.push(a); foodSel=null; $("#food-q").value=""; renderFoodSel(); renderFoodRes(); renderBasket(); toast(`Añadido: ${a.n} (${fmtK(a.kcal)} kcal)`); }
+  else if(t.dataset.recent!==undefined){ const it=recientes()[+t.dataset.recent]; if(it){ basket.push({...it}); renderBasket(); toast(`Añadido: ${it.n}`); } }
+  else if(t.dataset.delbask!==undefined){ basket.splice(+t.dataset.delbask,1); renderBasket(); }
+  else if(t.dataset.bsave){
+    if(!basket.length) return;
+    const nombreIn=$("#bask-name").value.trim(), fav=$("#bask-fav").checked;
+    let nombre=nombreIn||(basket.length===1?`${basket[0].n} · ${basket[0].label}`:basket.map(x=>x.n).join(" + "));
+    if(nombre.length>90) nombre=nombre.slice(0,87)+"…";
+    const kcal=Math.round(basket.reduce((a,x)=>a+x.kcal,0)), prot=r1(basket.reduce((a,x)=>a+x.prot,0));
+    diaW(calFecha).comidas.push({id:uid("c"),nombre,kcal,prot,items:basket.map(x=>({...x}))});
+    if(fav) D.favoritos.push({id:uid("f"),nombre,kcal,prot});
+    basket=[]; commit(); toast(`Apuntado: ${fmtK(kcal)} kcal${fav?" · guardado como rápida":""}`);
+  }
+});
 function updateActPreview(){
   const sel=$("#a-tipo"); if(!sel) return;
   const otra=sel.value==="otra";
