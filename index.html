@@ -160,32 +160,32 @@ const DIAS = ["Lunes","Miércoles","Viernes"];
 const MUSCULOS = ["Pierna","Glúteo","Pecho","Espalda","Hombro","Bíceps","Tríceps","Core","Otro"];
 const PIERNA = ["Pierna","Glúteo"];
 const DEFAULT_RUTINA = {
-  "Lunes": {enfoque:"Empujes y pierna anterior", ejercicios:[
-    {id:"E1",nombre:"Sentadillas con barra",musculo:"Pierna",series:3,reps:8,descanso:120,rir:2,inc:2.5},
-    {id:"E2",nombre:"Press de banca con barra",musculo:"Pecho",series:3,reps:8,descanso:120,rir:2,inc:2.5},
-    {id:"E3",nombre:"Remo con barra",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5},
-    {id:"E4",nombre:"Press militar con mancuernas sentado",musculo:"Hombro",series:3,reps:10,descanso:90,rir:2,inc:1},
-    {id:"E5",nombre:"Extensión de cuádriceps en máquina",musculo:"Pierna",series:2,reps:12,descanso:60,rir:1,inc:2.5},
-    {id:"E6",nombre:"Extensión de tríceps en polea alta",musculo:"Tríceps",series:2,reps:12,descanso:60,rir:1,inc:2.5}
+  "Lunes": {enfoque:"Glúteo y empuje", ejercicios:[
+    {id:"W1",nombre:"Hip thrust con barra",musculo:"Glúteo",series:3,reps:10,descanso:120,rir:2,inc:5,tip:"Espalda apoyada en el banco y la barra sobre la cadera (con almohadilla). Empuja con los talones y aprieta el glúteo arriba 1 segundo."},
+    {id:"W2",nombre:"Sentadilla goblet con mancuerna",musculo:"Pierna",series:3,reps:10,descanso:90,rir:2,inc:2,tip:"Mancuerna pegada al pecho, pies algo más abiertos que la cadera. Baja como si te sentaras, con la espalda recta y las rodillas hacia fuera."},
+    {id:"W3",nombre:"Press de pecho con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Tumbada en banco plano. Baja las mancuernas despacio hasta los lados del pecho y empuja hacia arriba."},
+    {id:"W4",nombre:"Jalón al pecho en polea",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5,tip:"Agarre algo más ancho que los hombros. Saca pecho y lleva la barra a la parte alta del pecho sin balancearte."},
+    {id:"W5",nombre:"Elevaciones laterales con mancuernas",musculo:"Hombro",series:3,reps:12,descanso:60,rir:1,inc:1,tip:"Codos un poco doblados, sube hasta la altura de los hombros. Peso ligero y sin impulso."},
+    {id:"W6",nombre:"Plancha frontal",musculo:"Core",series:3,reps:30,descanso:60,rir:1,inc:0,unidad:"s",tip:"Antebrazos en el suelo y el cuerpo recto de la cabeza a los talones. Aprieta abdomen y glúteos. Apunta los segundos que aguantas."}
   ]},
-  "Miércoles": {enfoque:"Tirones y cadena posterior", ejercicios:[
-    {id:"E7",nombre:"Peso muerto rumano con barra",musculo:"Pierna",series:3,reps:8,descanso:120,rir:2,inc:2.5},
-    {id:"E8",nombre:"Jalón al pecho en polea",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5},
-    {id:"E9",nombre:"Press inclinado con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1},
-    {id:"E10",nombre:"Remo sentado en polea baja",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5},
-    {id:"E11",nombre:"Curl femoral tumbado en máquina",musculo:"Pierna",series:2,reps:12,descanso:60,rir:1,inc:2.5},
-    {id:"E12",nombre:"Curl de bíceps con mancuernas",musculo:"Bíceps",series:2,reps:12,descanso:60,rir:1,inc:1}
+  "Miércoles": {enfoque:"Parte de atrás y tirón", ejercicios:[
+    {id:"W7",nombre:"Peso muerto rumano con mancuernas",musculo:"Pierna",series:3,reps:10,descanso:120,rir:2,inc:2,tip:"Rodillas un poco flexionadas. Lleva la cadera hacia atrás bajando las mancuernas pegadas a las piernas hasta notar que estira la parte de atrás del muslo. Espalda recta."},
+    {id:"W8",nombre:"Abducción de cadera en máquina",musculo:"Glúteo",series:2,reps:15,descanso:60,rir:1,inc:2.5,tip:"Abre las piernas hacia fuera de forma controlada. Inclinarte un poco hacia delante trabaja más el glúteo."},
+    {id:"W9",nombre:"Remo sentado en polea baja",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5,tip:"Espalda recta. Tira del agarre hacia el ombligo juntando los omóplatos y vuelve despacio."},
+    {id:"W10",nombre:"Press de hombro con mancuernas sentada",musculo:"Hombro",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Sentada con respaldo. Empuja las mancuernas desde la altura de las orejas hacia arriba sin arquear la espalda."},
+    {id:"W11",nombre:"Curl de bíceps con mancuernas",musculo:"Bíceps",series:2,reps:12,descanso:60,rir:1,inc:1,tip:"Codos pegados al cuerpo. Sube sin balancearte y baja despacio."},
+    {id:"W12",nombre:"Elevaciones de piernas tumbada",musculo:"Core",series:3,reps:10,descanso:60,rir:1,inc:0,tip:"Boca arriba, manos bajo los glúteos. Sube las piernas rectas hasta 90° y baja sin tocar el suelo."}
   ]},
-  "Viernes": {enfoque:"Full Body mixto · pierna en máquina", ejercicios:[
-    {id:"E13",nombre:"Prensa de piernas inclinada",musculo:"Pierna",series:3,reps:10,descanso:120,rir:2,inc:5},
-    {id:"E14",nombre:"Press de banca plano con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1},
-    {id:"E15",nombre:"Remo unilateral con mancuerna",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:1},
-    {id:"E16",nombre:"Elevaciones laterales con mancuernas",musculo:"Hombro",series:3,reps:15,descanso:60,rir:1,inc:1},
-    {id:"E17",nombre:"Elevación de gemelos de pie en máquina",musculo:"Pierna",series:3,reps:12,descanso:60,rir:1,inc:2.5},
-    {id:"E18",nombre:"Curl martillo con mancuernas",musculo:"Bíceps",series:2,reps:12,descanso:60,rir:1,inc:1},
-    {id:"E19",nombre:"Press francés con barra Z",musculo:"Tríceps",series:2,reps:12,descanso:60,rir:1,inc:1}
+  "Viernes": {enfoque:"Pierna y mixto", ejercicios:[
+    {id:"W13",nombre:"Prensa de piernas con los pies altos",musculo:"Pierna",series:3,reps:12,descanso:120,rir:2,inc:5,tip:"Pies altos y separados en la plataforma (así trabaja más el glúteo). Baja hasta 90° sin despegar la zona lumbar del respaldo."},
+    {id:"W14",nombre:"Patada de glúteo en polea",musculo:"Glúteo",series:2,reps:12,descanso:60,rir:1,inc:1,tip:"Tobillera en la polea baja. Lleva la pierna hacia atrás apretando el glúteo, sin arquear la espalda. Las repeticiones son por pierna."},
+    {id:"W15",nombre:"Remo con mancuerna a una mano",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Rodilla y mano apoyadas en el banco. Tira de la mancuerna hacia la cadera con la espalda recta. Repeticiones por brazo."},
+    {id:"W16",nombre:"Press inclinado con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Banco inclinado a unos 30°. Baja las mancuernas a la parte alta del pecho y empuja."},
+    {id:"W17",nombre:"Extensión de tríceps en polea alta",musculo:"Tríceps",series:2,reps:12,descanso:60,rir:1,inc:2.5,tip:"Codos pegados a los costados. Estira los brazos hacia abajo y vuelve controlando."},
+    {id:"W18",nombre:"Crunch en polea alta de rodillas",musculo:"Core",series:3,reps:12,descanso:60,rir:1,inc:2.5,tip:"De rodillas frente a la polea, con la cuerda junto a la cabeza. Enrolla el tronco hacia abajo apretando el abdomen."}
   ]}
 };
+const RUTINA_VER = 2;
 // Las 6 comidas del plan (kcal y proteína aproximadas)
 const DEFAULT_FAVS = [
   {id:"f1",nombre:"Desayuno: 3 huevos + 2 pan integral + plátano",kcal:475,prot:27},
@@ -203,7 +203,7 @@ const ACTIVIDADES = [
   ["Bicicleta de paseo",4.0],["Jugar con niños (activo)",4.0],["Bailar",5.0],["Pesas / calistenia en casa",3.5],
   ["Correr suave",7.0],["Fútbol / pádel / deporte",7.0]
 ];
-const DEFAULT_PERFIL = {sexo:"",edad:"",altura:170,pesoRef:56,factor:1.2,objKcal:2400,objProt:110,superavit:0,gymMin:60,gymMet:5,fuenteAct:"manual",relojGym:false,ultimoAjuste:""};
+const DEFAULT_PERFIL = {sexo:"m",edad:"",altura:170,pesoRef:56,factor:1.2,objKcal:2400,objProt:110,superavit:0,gymMin:60,gymMet:5,fuenteAct:"manual",relojGym:false,ultimoAjuste:""};
 // Horario del plan de comidas (para avisar si vas retrasada con la comida)
 const PLAN_HORAS = [["f1",7.5],["f2",10.5],["f3",13.5],["f4",16.5],["f5",20.5],["f6",22.5]];
 
@@ -413,14 +413,17 @@ function armed(b,txt){ if(b.classList.contains("arm")) return true; b.classList.
    ===================================================================== */
 const KEY="diarioFuerza.v2";
 let D;
-function emptyData(){ return {v:2,rutina:clone(DEFAULT_RUTINA),perfil:clone(DEFAULT_PERFIL),sesiones:[],pesos:[],dias:{},favoritos:clone(DEFAULT_FAVS),archivo:{}}; }
+function emptyData(){ return {v:2,rutinaVer:RUTINA_VER,rutina:clone(DEFAULT_RUTINA),perfil:clone(DEFAULT_PERFIL),sesiones:[],pesos:[],medidas:[],dias:{},favoritos:clone(DEFAULT_FAVS),archivo:{},ultimaDescarga:""}; }
 function normalize(d){
   const e=emptyData();
+  const ver=d.rutinaVer||0;
   d={...e,...d};
+  d.rutinaVer=ver;
   d.perfil={...e.perfil,...(d.perfil||{})};
   DIAS.forEach(x=>{ if(!d.rutina[x]) d.rutina[x]=clone(DEFAULT_RUTINA[x]); });
   if(!Array.isArray(d.sesiones)) d.sesiones=[];
   if(!Array.isArray(d.pesos)) d.pesos=[];
+  if(!Array.isArray(d.medidas)) d.medidas=[];
   if(!Array.isArray(d.favoritos)) d.favoritos=[];
   d.dias=d.dias||{}; d.archivo=d.archivo||{};
   return d;
@@ -429,6 +432,7 @@ function loadData(){
   const v2=lsGet(KEY);
   if(v2) return normalize(v2);
   const d=emptyData();
+  d.rutinaVer=0; // si viene de la versión 1, se migra la rutina al arrancar
   const v1=lsGet("diarioFuerza.v1"); // versión anterior de la app
   if(v1){ d.sesiones=v1.sessions||[]; d.pesos=v1.weights||[]; }
   return d;
@@ -455,6 +459,7 @@ function suggestion(ex,last){
   if(!last) return null;
   const top=Math.max(...last.sets.map(s=>s.kg||0));
   const allHit=last.sets.length>=ex.series && last.sets.every(s=>(s.reps||0)>=ex.reps);
+  if(allHit&&!(+ex.inc)) return {kg:top, txt:`Lo completaste todo: la próxima vez intenta ${ex.reps+(ex.unidad==="s"?10:2)}${ex.unidad==="s"?" segundos":" repeticiones"}. Cuando lo consigas, cambia el objetivo en Ajustes.`};
   return allHit ? {kg:r1(top+(+ex.inc||0)), txt:`Lo completaste todo: sube a ${fmtKg(r1(top+(+ex.inc||0)))} kg`}
                 : {kg:top, txt:`Mantén ${fmtKg(top)} kg hasta completar ${ex.series}×${ex.reps}`};
 }
@@ -493,6 +498,10 @@ function renderTrain(){
       <input type="date" id="f-fecha" value="${esc(form.fecha)}">
     </div>
     <div class="enfoque" style="margin-top:12px">${esc(R.enfoque)}</div>
+    <details class="note"><summary style="cursor:pointer">¿Cómo se lee la rutina?</summary><div style="margin-top:6px;color:var(--text);line-height:1.5">
+      <b>3×10</b> = 3 series de 10 repeticiones. <b>RIR 2</b> = elige un peso con el que podrías hacer 2 repeticiones más, pero paras ahí.<br>
+      Descansa el tiempo del botón ⏱ entre series. Cuando completes todas las series y repeticiones, la app te dirá cuánto subir la próxima vez.<br>
+      Si un ejercicio no lo conoces, abre <b>Cómo se hace</b>. Calienta 5 minutos y haz 1 serie ligera antes del primer ejercicio.</div></details>
   </div>`;
   if(!R.ejercicios.length) h+=`<div class="card"><div class="empty">Este día no tiene ejercicios. Añádelos en <b>Ajustes → Rutina</b>.</div></div>`;
   R.ejercicios.forEach(ex=>{
@@ -506,10 +515,11 @@ function renderTrain(){
     h+=`<div class="card">
       <div class="ex-head">
         <div><span class="ex-name">${esc(ex.nombre)}</span><span class="tag ${PIERNA.includes(ex.musculo)?"leg":""}">${esc(ex.musculo)}</span></div>
-        <div class="target">${ex.series}×${ex.reps} · RIR ${ex.rir}</div>
+        <div class="target">${ex.series}×${ex.reps}${ex.unidad==="s"?" s":""} · RIR ${ex.rir}</div>
       </div>
-      <div class="hint">${last?`Última (${fmtF(last.fecha)}): <b>${last.sets.map(s=>`${fmtKg(s.kg)}×${s.reps}`).join(" · ")}</b><br><span class="sug">${esc(sug.txt)}</span>`:`Primera vez: elige un peso con el que llegues a las reps dejando ${ex.rir} en recámara.`}</div>
-      <div class="sets"><div></div><div class="lbl">kg</div><div class="lbl">reps</div>${rows}</div>
+      ${ex.tip?`<details class="note" style="margin-top:4px"><summary style="cursor:pointer">Cómo se hace</summary><div style="margin-top:4px;color:var(--text)">${esc(ex.tip)}</div></details>`:""}
+      <div class="hint">${last?`Última (${fmtF(last.fecha)}): <b>${last.sets.map(s=>`${fmtKg(s.kg)}×${s.reps}`).join(" · ")}</b><br><span class="sug">${esc(sug.txt)}</span>`:(ex.unidad==="s"?`Primera vez: aguanta con buena técnica y apunta los segundos (objetivo ${ex.reps} s). En kg pon 0.`:!(+ex.inc)?`Primera vez: haz las repeticiones con buena técnica. En kg pon 0.`:`Primera vez: elige un peso con el que llegues a las ${ex.reps} repeticiones pudiendo hacer ${ex.rir} más.`)}</div>
+      <div class="sets"><div></div><div class="lbl">kg</div><div class="lbl">${ex.unidad==="s"?"segundos":"reps"}</div>${rows}</div>
       <div class="btns">
         ${last?`<button class="btn" data-fill="${ex.id}" data-mode="last">Repetir última</button>`:""}
         ${sug?`<button class="btn" data-fill="${ex.id}" data-mode="sug">Usar ${fmtKg(sug.kg)} kg × ${ex.reps}</button>`:""}
@@ -602,8 +612,8 @@ function coachTips(){
   const W21=W.filter(w=>w.fecha>=addDays(today,-21));
   if(W21.length>=3&&daysBetween(W21[0].fecha,W21[W21.length-1].fecha)>=12){
     const sl=slopePerWeek(W21), puede=!p.ultimoAjuste||daysBetween(p.ultimoAjuste,today)>=14;
-    if(puede&&sl<0.15) tips.push({t:"warn",h:`📈 En las últimas semanas el peso casi no sube (${fmtKg(Math.round(sl*100)/100)} kg/semana). Para seguir ganando músculo, sube tu objetivo de <b>${fmtK(p.objKcal)}</b> a <b>${fmtK(+p.objKcal+150)} kcal</b> (≈ un vaso de leche con cacao más al día).`,btn:{attr:'data-coach="150"',txt:`Subir a ${fmtK(+p.objKcal+150)} kcal`}});
-    else if(puede&&sl>0.6) tips.push({t:"info",h:`Subes rápido (${fmtKg(Math.round(sl*100)/100)} kg/semana): parte puede ser grasa. Puedes bajar el objetivo a ${fmtK(+p.objKcal-100)} kcal.`,btn:{attr:'data-coach="-100"',txt:`Bajar a ${fmtK(+p.objKcal-100)} kcal`}});
+    if(puede&&sl<0.1) tips.push({t:"warn",h:`📈 En las últimas semanas el peso casi no sube (${fmtKg(Math.round(sl*100)/100)} kg/semana). Para seguir ganando músculo, sube tu objetivo de <b>${fmtK(p.objKcal)}</b> a <b>${fmtK(+p.objKcal+150)} kcal</b> (≈ un vaso de leche con cacao más al día).`,btn:{attr:'data-coach="150"',txt:`Subir a ${fmtK(+p.objKcal+150)} kcal`}});
+    else if(puede&&sl>0.4) tips.push({t:"info",h:`Subes rápido (${fmtKg(Math.round(sl*100)/100)} kg/semana): parte puede ser grasa. Puedes bajar el objetivo a ${fmtK(+p.objKcal-100)} kcal.`,btn:{attr:'data-coach="-100"',txt:`Bajar a ${fmtK(+p.objKcal-100)} kcal`}});
   }
   // 6. Ejercicios estancados (3 sesiones sin mejorar el 1RM estimado)
   let est=0;
@@ -615,6 +625,15 @@ function coachTips(){
     if(ult<=prev){ est++; const top=hi[hi.length-1].top;
       tips.push({t:"warn",h:`🔁 <b>${esc(ex.nombre)}</b> lleva 3 sesiones sin mejorar. Prueba bajar a ${fmtKg(r1(top*0.9))} kg (−10 %) y volver a subir poco a poco, o cambia a ${ex.reps+2} repeticiones durante 2 semanas. Revisa también sueño y calorías.`}); }
   }));
+  // 8. Medidas cada 4 semanas
+  const Ms=[...D.medidas].sort((a,b)=>a.fecha<b.fecha?-1:1), lastM=Ms[Ms.length-1];
+  if(ses.length&&(!lastM||daysBetween(lastM.fecha,today)>=28)) tips.push({t:"info",h:`📏 ${lastM?`Hace ${daysBetween(lastM.fecha,today)} días de tus últimas medidas`:"Aún no has registrado tus medidas"}. Mídete (cintura, cadera, muslo, brazo) y haz tus 3 fotos: así se ve el progreso real.`,btn:{attr:'data-go="peso"',txt:"Registrar medidas"}});
+  // 9. Semana de descarga cada ~7 semanas de entreno
+  if(ses.length){
+    const base=[ses[0].fecha,D.ultimaDescarga||""].sort().pop();
+    const recientes=ses.filter(s=>s.fecha>=addDays(today,-14)).length;
+    if(daysBetween(base,today)>=49&&recientes>=3) tips.push({t:"info",h:"🧘 Llevas unas 7 semanas entrenando fuerte. Esta semana haz <b>semana de descarga</b>: los mismos ejercicios con un 30 % menos de peso o la mitad de series. Recuperas y luego progresas mejor.",btn:{attr:'data-descarga="1"',txt:"Hecho: empiezo la descarga"}});
+  }
   // 7. Salud sin importar
   if(p.fuenteAct==="salud"&&hora>=20&&!(dia(today).salud&&dia(today).salud.ts)) tips.push({t:"info",h:"📲 Ejecuta el atajo <b>Salud → Diario</b> y pega tus datos para calcular el gasto de hoy.",btn:{attr:'data-go="calorias"',txt:"Ir a Calorías"}});
   return tips;
@@ -626,6 +645,7 @@ function coachHTML(){
 function coachClick(b){
   if(b.dataset.go){ showTab(b.dataset.go); window.scrollTo(0,0); return true; }
   if(b.dataset.coach){ const v=+b.dataset.coach; D.perfil.objKcal=(+D.perfil.objKcal||2400)+v; D.perfil.ultimoAjuste=hoy(); commit(); toast(`Objetivo: ${fmtK(D.perfil.objKcal)} kcal/día`); return true; }
+  if(b.dataset.descarga){ D.ultimaDescarga=hoy(); commit(); toast("Semana de descarga anotada"); return true; }
   if(b.dataset.addfavnow){ const f=D.favoritos.find(x=>x.id===b.dataset.addfavnow); if(f){ diaW(hoy()).comidas.push({id:uid("c"),nombre:f.nombre,kcal:f.kcal,prot:f.prot||0}); commit(); toast(`+${fmtK(f.kcal)} kcal`);} return true; }
   return false;
 }
@@ -1056,13 +1076,13 @@ function renderWeight(){
       <label class="f">Peso (kg)<input type="number" inputmode="decimal" step="0.1" id="w-kg" placeholder="${last?fmtKg(last.kg):fmtKg(+D.perfil.pesoRef)}" style="width:120px"></label>
       <button class="btn pri" id="w-save" style="align-self:flex-end">Guardar</button>
     </div>
-    <div class="note" style="margin-top:8px">Pésate en las mismas condiciones (por la mañana, en ayunas). Una referencia habitual en volumen es ganar entre 0,25 y 0,5 kg por semana. Este peso se usa también para calcular las calorías que gastas.</div>
+    <div class="note" style="margin-top:8px">Pésate en las mismas condiciones (por la mañana, en ayunas). Para ti, lo ideal es ganar unos 0,2–0,3 kg por semana: más rápido suele ser grasa. Este peso se usa también para calcular las calorías que gastas.</div>
   </div>`;
   if(!W.length) h+=`<div class="card"><div class="empty">Aún no hay registros de peso.</div></div>`;
   else{
     const diff=last.kg-first.kg;
     let ritmo="";
-    if(sl!=null){ ritmo = sl<0.1 ? `<div class="banner bad" style="margin-top:0">Las últimas 4 semanas el peso no sube (${fmtKg(Math.round(sl*100)/100)} kg/sem). Revisa en <b>Calorías</b> si estás comiendo más de lo que gastas.</div>` : sl>0.6 ? `<div class="banner" style="margin-top:0">Subes rápido (${fmtKg(Math.round(sl*100)/100)} kg/sem): parte puede ser grasa.</div>` : `<div class="banner good" style="margin-top:0">Ritmo dentro de la referencia de volumen.</div>`; }
+    if(sl!=null){ ritmo = sl<0.1 ? `<div class="banner bad" style="margin-top:0">Las últimas 4 semanas el peso no sube (${fmtKg(Math.round(sl*100)/100)} kg/sem). Revisa en <b>Calorías</b> si estás comiendo más de lo que gastas.</div>` : sl>0.4 ? `<div class="banner" style="margin-top:0">Subes rápido (${fmtKg(Math.round(sl*100)/100)} kg/sem): parte puede ser grasa.</div>` : `<div class="banner good" style="margin-top:0">Buen ritmo: dentro de los 0,2–0,3 kg por semana que buscamos.</div>`; }
     h+=`<div class="kpis">
       <div class="kpi"><div class="k">Peso actual</div><div class="v">${fmtKg(last.kg)} kg</div><div class="d">${fmtF(last.fecha)}</div></div>
       <div class="kpi"><div class="k">Cambio total</div><div class="v ${diff>0?"up":diff<0?"down":""}">${diff>0?"+":""}${fmtKg(r1(diff))} kg</div><div class="d">desde ${fmtF(first.fecha)} (${fmtKg(first.kg)} kg)</div></div>
@@ -1073,11 +1093,48 @@ function renderWeight(){
     ${[...W].reverse().map((w,i,arr)=>{const prev=arr[i+1], d=prev?w.kg-prev.kg:null; return `<tr><td>${fmtF(w.fecha)}</td><td class="n">${fmtKg(w.kg)} kg</td><td class="n ${d>0?"up":d<0?"down":""}">${d==null?"":(d>0?"+":"")+fmtKg(r1(d))}</td><td class="n"><button class="btn danger sm" data-delw="${esc(w.fecha)}">✕</button></td></tr>`;}).join("")}
     </tbody></table></div>`;
   }
+  h+=medidasHTML();
   $("#tab-peso").innerHTML=h;
+  drawMedidas();
   if(W.length) mkChart("c-w",{type:"line",data:{labels:W.map(w=>fmtF(w.fecha)),datasets:[{label:"Peso corporal",data:W.map(w=>w.kg),borderColor:"#c8f53a",backgroundColor:"rgba(200,245,58,.12)",fill:true,tension:.3,pointRadius:4}]},options:{...baseOpts("kg"),plugins:{legend:{display:false}}}});
+}
+const MEDIDAS=[["cintura","Cintura","a la altura del ombligo"],["cadera","Cadera / glúteo","por la parte más ancha"],["muslo","Muslo","por la parte más ancha"],["brazo","Brazo","relajado, en la parte más ancha"],["pecho","Pecho","bajo las axilas"]];
+const MED_COL={cintura:"#ff8a3d",cadera:"#c8f53a",muslo:"#7cc6ff",brazo:"#e58cff",pecho:"#f5d33a"};
+function medidasHTML(){
+  const M=[...D.medidas].sort((a,b)=>a.fecha<b.fecha?-1:1), first=M[0], last=M[M.length-1];
+  let h=`<div class="card"><div class="h2">Medidas corporales</div>
+    <div class="note" style="margin-bottom:10px">Mídete cada 4 semanas, por la mañana, con cinta métrica y sin apretar. Si ganas músculo, verás subir cadera, muslo y brazo antes que en la báscula. Haz también 3 fotos (frente, lado y espalda) con la misma luz y guárdalas en un álbum del iPhone.</div>
+    <div class="grid3"><label class="f">Fecha<input type="date" id="m-fecha" value="${hoy()}"></label>
+    ${MEDIDAS.map(([k,l,d])=>`<label class="f">${l} (cm)<input type="number" inputmode="decimal" step="0.1" id="m-${k}" placeholder="${last&&last[k]!=null?fmtKg(last[k]):d}"></label>`).join("")}</div>
+    <button class="btn pri" id="m-save" style="margin-top:10px">Guardar medidas</button>`;
+  if(M.length){
+    h+=`<div class="kpis" style="margin:12px 0 0">${MEDIDAS.map(([k,l])=>{
+      const vals=M.filter(m=>m[k]!=null); if(!vals.length) return "";
+      const a=vals[0][k], z=vals[vals.length-1][k], dlt=r1(z-a);
+      const bueno=k==="cintura"?dlt<=0:dlt>=0;
+      return `<div class="kpi"><div class="k">${l}</div><div class="v">${fmtKg(z)} cm</div><div class="d ${vals.length>1?(bueno?"up":"down"):""}">${vals.length>1?(dlt>0?"+":"")+fmtKg(dlt)+" cm desde "+fmtF(vals[0].fecha):"primera medida"}</div></div>`;}).join("")}</div>
+      ${M.length>1?`<div class="chart-box" style="margin-top:12px"><canvas id="c-m"></canvas></div>`:""}
+      <table style="margin-top:10px"><thead><tr><th>Fecha</th>${MEDIDAS.map(([k,l])=>`<th class="n">${l.split(" ")[0]}</th>`).join("")}<th></th></tr></thead><tbody>
+      ${[...M].reverse().map(m=>`<tr><td>${fmtF(m.fecha)}</td>${MEDIDAS.map(([k])=>`<td class="n">${m[k]!=null?fmtKg(m[k]):"–"}</td>`).join("")}<td class="n"><button class="btn danger sm" data-delm="${esc(m.fecha)}">✕</button></td></tr>`).join("")}
+      </tbody></table>`;
+  }
+  return h+`</div>`;
+}
+function drawMedidas(){
+  const M=[...D.medidas].sort((a,b)=>a.fecha<b.fecha?-1:1); if(M.length<2) return;
+  mkChart("c-m",{type:"line",data:{labels:M.map(m=>fmtF(m.fecha)),datasets:MEDIDAS.filter(([k])=>M.some(m=>m[k]!=null)).map(([k,l])=>({label:l,data:M.map(m=>m[k]??null),borderColor:MED_COL[k],backgroundColor:MED_COL[k],spanGaps:true,tension:.25,pointRadius:3}))},options:baseOpts("cm")});
 }
 $("#tab-peso").addEventListener("click",e=>{
   const b=e.target.closest("button"); if(!b) return;
+  if(b.id==="m-save"){
+    const f=$("#m-fecha").value; if(!f){ toast("Pon la fecha",true); return; }
+    const reg={fecha:f}; let n=0;
+    MEDIDAS.forEach(([k])=>{ const v=num($("#m-"+k).value); if(v!=null&&v>10&&v<250){ reg[k]=r1(v); n++; } });
+    if(!n){ toast("Escribe al menos una medida en cm",true); return; }
+    const prev=D.medidas.find(m=>m.fecha===f)||{};
+    D.medidas=D.medidas.filter(m=>m.fecha!==f); D.medidas.push({...prev,...reg}); commit(); toast("Medidas guardadas"); return;
+  }
+  if(b.dataset.delm){ if(!armed(b,"¿Borrar?")) return; D.medidas=D.medidas.filter(m=>m.fecha!==b.dataset.delm); commit(); return; }
   if(b.id==="w-save"){
     const f=$("#w-fecha").value, kg=num($("#w-kg").value);
     if(!f||kg==null||kg<20||kg>250){ toast("Introduce un peso válido",true); return; }
@@ -1123,6 +1180,7 @@ function importData(data,mode){
       (d.comidas||[]).forEach(c=>{ if(!cur.comidas.some(x=>x.id===c.id)) cur.comidas.push(c); });
       (d.actividades||[]).forEach(a=>{ if(!cur.actividades.some(x=>x.id===a.id)) cur.actividades.push(a); }); });
     inc.favoritos.forEach(f=>{ if(!D.favoritos.some(x=>x.id===f.id)) D.favoritos.push(f); });
+    inc.medidas.forEach(m=>{ if(m&&m.fecha){ D.medidas=D.medidas.filter(x=>x.fecha!==m.fecha); D.medidas.push(m); } });
     Object.assign(D.archivo,inc.archivo);
     // Ejercicios de la copia que no están en la rutina actual: se guardan en el archivo para conservar el nombre
     DIAS.forEach(d=>inc.rutina[d].ejercicios.forEach(e=>{ if(!EX()[e.id]) D.archivo[e.id]={nombre:e.nombre,musculo:e.musculo}; }));
@@ -1286,6 +1344,15 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.datas
 
 /* Arranque */
 D=loadData();
+let rutinaMigrada=false;
+if((D.rutinaVer||0)<RUTINA_VER){
+  const nuevos=new Set(DIAS.flatMap(d=>DEFAULT_RUTINA[d].ejercicios.map(e=>e.id)));
+  DIAS.forEach(d=>(D.rutina[d]?.ejercicios||[]).forEach(e=>{ if(!nuevos.has(e.id)) D.archivo[e.id]={nombre:e.nombre,musculo:e.musculo}; }));
+  D.rutina=clone(DEFAULT_RUTINA); D.rutinaVer=RUTINA_VER;
+  if(!D.perfil.sexo) D.perfil.sexo="m";
+  try{ localStorage.removeItem("diarioFuerza.draft"); }catch(e){}
+  rutinaMigrada=D.sesiones.length>0||true;
+}
 if(lsSet("diarioFuerza.test",1)){ try{localStorage.removeItem("diarioFuerza.test");}catch(e){} setStatus("ok","Guardado en este dispositivo"); persist(); }
 else { setStatus("bad","Sin almacenamiento"); $("#banner").innerHTML='<div class="banner bad">Este navegador no permite guardar datos (¿modo incógnito?). Lo que registres se perderá al cerrar.</div>'; }
 let startTab=lsGet("diarioFuerza.tab")||"entrenar";
@@ -1295,6 +1362,7 @@ if(/(activa|pasos|peso)=/.test(location.search)){
   try{ history.replaceState(null,"",location.pathname); }catch(e){}
 }
 showTab(startTab);
+if(rutinaMigrada&&D.sesiones.length) setTimeout(()=>toast("Rutina nueva cargada. Tus entrenos anteriores siguen en Historial y Progreso."),600);
 if("serviceWorker" in navigator && location.protocol==="https:"){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>
 </body>
