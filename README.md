@@ -6,11 +6,12 @@ App web para registrar mis entrenamientos Full Body (lunes, miércoles y viernes
 
 - **Entrenar**: rutina del día cargada; apuntas kg y repeticiones por serie. Muestra lo que hiciste la última vez y sugiere el peso de hoy (si completaste todas las series → sube; si no → mantén). Temporizador de descanso con aviso sonoro.
 - **Progreso**: gráfica por ejercicio con peso máximo y 1RM estimado (fórmula de Epley), % de mejora y volumen semanal total.
-- **Peso**: registro del peso corporal, cambio total y ritmo de las últimas 4 semanas (kg/semana).
+- **Peso y medidas**: peso corporal (ritmo objetivo 0,2–0,3 kg/semana) y medidas de cintura, cadera, muslo, brazo y pecho con gráfica.
+- **Rutina Full Body para mujer**: más glúteo (hip thrust, abducción, patada en polea), máximo 2 ejercicios de pierna/glúteo por día y explicación de técnica en cada ejercicio.
 - **Calorías**: buscador con ~150 alimentos y platos españoles (lentejas, tortilla, pizza, bocadillos…) en raciones caseras (plato, rebanada, vaso, puñado o gramos) que **calcula las kcal y la proteína solo**; "Tu plato" para juntar varios alimentos en una comida y guardarla como comida rápida; comidas usadas hace poco; proteína, actividad en casa y en el trabajo, y **balance comido − gastado**. Avisa si gastas más de lo que comes y sugiere qué comida añadir para compensar.
 - **Historial**: editar o borrar sesiones, descargar/importar copias de seguridad en JSON (incluye rutina, calorías, actividad, peso y ajustes).
 - **Ajustes**: perfil (para calcular el gasto), editor de rutina (cambiar, añadir, quitar y reordenar ejercicios) y comidas favoritas.
-- **Avisos automáticos** al abrir la app: entreno del día, entrenos de la semana, si vas retrasada con la comida según la hora, balance de ayer, pesaje semanal, ajuste de calorías según la tendencia del peso (con botón para aplicarlo) y ejercicios estancados.
+- **Avisos automáticos** al abrir la app (medidas cada 4 semanas, semana de descarga cada ~7 semanas, y además): entreno del día, entrenos de la semana, si vas retrasada con la comida según la hora, balance de ayer, pesaje semanal, ajuste de calorías según la tendencia del peso (con botón para aplicarlo) y ejercicios estancados.
 - **Resumen de los últimos 7 días** en Progreso.
 - **Importa energía activa, pasos y peso de la app Salud del iPhone** mediante un Atajo.
 - **Instalable y funciona sin conexión** (PWA).
@@ -45,7 +46,7 @@ Gasto del día = basal (Mifflin-St Jeor) × factor de día normal
 
 ## Personalizar la rutina
 
-Se edita desde la propia app en **Ajustes → Rutina**. La rutina original está en `index.html`, en el objeto `DEFAULT_RUTINA` (botón "Restaurar rutina original"). Cada ejercicio tiene:
+Se edita desde la propia app en **Ajustes → Rutina**. La rutina original está en `index.html`, en el objeto `DEFAULT_RUTINA` (cada ejercicio puede llevar `tip` con la técnica y `unidad:"s"` si se mide en segundos) (botón "Restaurar rutina original"). Cada ejercicio tiene:
 
 | Campo | Significado |
 |---|---|
