@@ -160,32 +160,34 @@ const DIAS = ["Lunes","Miércoles","Viernes"];
 const MUSCULOS = ["Pierna","Glúteo","Pecho","Espalda","Hombro","Bíceps","Tríceps","Core","Otro"];
 const PIERNA = ["Pierna","Glúteo"];
 const DEFAULT_RUTINA = {
-  "Lunes": {enfoque:"Glúteo y empuje", ejercicios:[
+  "Lunes": {enfoque:"Glúteo, espalda y hombro", ejercicios:[
     {id:"W1",nombre:"Hip thrust con barra",musculo:"Glúteo",series:3,reps:10,descanso:120,rir:2,inc:5,tip:"Espalda apoyada en el banco y la barra sobre la cadera (con almohadilla). Empuja con los talones y aprieta el glúteo arriba 1 segundo."},
     {id:"W2",nombre:"Sentadilla goblet con mancuerna",musculo:"Pierna",series:3,reps:10,descanso:90,rir:2,inc:2,tip:"Mancuerna pegada al pecho, pies algo más abiertos que la cadera. Baja como si te sentaras, con la espalda recta y las rodillas hacia fuera."},
-    {id:"W3",nombre:"Press de pecho con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Tumbada en banco plano. Baja las mancuernas despacio hasta los lados del pecho y empuja hacia arriba."},
-    {id:"W4",nombre:"Jalón al pecho en polea",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5,tip:"Agarre algo más ancho que los hombros. Saca pecho y lleva la barra a la parte alta del pecho sin balancearte."},
-    {id:"W5",nombre:"Elevaciones laterales con mancuernas",musculo:"Hombro",series:3,reps:12,descanso:60,rir:1,inc:1,tip:"Codos un poco doblados, sube hasta la altura de los hombros. Peso ligero y sin impulso."},
+    {id:"W19",nombre:"Face pull en polea",musculo:"Hombro",series:3,reps:12,descanso:60,rir:1,inc:2.5,tip:"Polea a la altura de la cara, con cuerda. Tira hacia la frente abriendo los codos hacia fuera y junta los omóplatos. Trabaja la parte de atrás del hombro y la espalda alta, y mejora la postura."},
+    {id:"E8",nombre:"Jalón al pecho en polea",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5,tip:"Agarre algo más ancho que los hombros. Saca pecho y lleva la barra a la parte alta del pecho sin balancearte."},
+    {id:"E16",nombre:"Elevaciones laterales con mancuernas",musculo:"Hombro",series:3,reps:12,descanso:60,rir:1,inc:1,tip:"Codos un poco doblados, sube hasta la altura de los hombros. Peso ligero y sin impulso."},
     {id:"W6",nombre:"Plancha frontal",musculo:"Core",series:3,reps:30,descanso:60,rir:1,inc:0,unidad:"s",tip:"Antebrazos en el suelo y el cuerpo recto de la cabeza a los talones. Aprieta abdomen y glúteos. Apunta los segundos que aguantas."}
   ]},
   "Miércoles": {enfoque:"Parte de atrás y tirón", ejercicios:[
     {id:"W7",nombre:"Peso muerto rumano con mancuernas",musculo:"Pierna",series:3,reps:10,descanso:120,rir:2,inc:2,tip:"Rodillas un poco flexionadas. Lleva la cadera hacia atrás bajando las mancuernas pegadas a las piernas hasta notar que estira la parte de atrás del muslo. Espalda recta."},
     {id:"W8",nombre:"Abducción de cadera en máquina",musculo:"Glúteo",series:2,reps:15,descanso:60,rir:1,inc:2.5,tip:"Abre las piernas hacia fuera de forma controlada. Inclinarte un poco hacia delante trabaja más el glúteo."},
-    {id:"W9",nombre:"Remo sentado en polea baja",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5,tip:"Espalda recta. Tira del agarre hacia el ombligo juntando los omóplatos y vuelve despacio."},
-    {id:"W10",nombre:"Press de hombro con mancuernas sentada",musculo:"Hombro",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Sentada con respaldo. Empuja las mancuernas desde la altura de las orejas hacia arriba sin arquear la espalda."},
-    {id:"W11",nombre:"Curl de bíceps con mancuernas",musculo:"Bíceps",series:2,reps:12,descanso:60,rir:1,inc:1,tip:"Codos pegados al cuerpo. Sube sin balancearte y baja despacio."},
+    {id:"E10",nombre:"Remo sentado en polea baja",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:2.5,tip:"Espalda recta. Tira del agarre hacia el ombligo juntando los omóplatos y vuelve despacio."},
+    {id:"E4",nombre:"Press de hombro con mancuernas sentada",musculo:"Hombro",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Sentada con respaldo. Empuja las mancuernas desde la altura de las orejas hacia arriba sin arquear la espalda."},
+    {id:"E12",nombre:"Curl de bíceps con mancuernas",musculo:"Bíceps",series:2,reps:12,descanso:60,rir:1,inc:1,tip:"Codos pegados al cuerpo. Sube sin balancearte y baja despacio."},
     {id:"W12",nombre:"Elevaciones de piernas tumbada",musculo:"Core",series:3,reps:10,descanso:60,rir:1,inc:0,tip:"Boca arriba, manos bajo los glúteos. Sube las piernas rectas hasta 90° y baja sin tocar el suelo."}
   ]},
   "Viernes": {enfoque:"Pierna y mixto", ejercicios:[
-    {id:"W13",nombre:"Prensa de piernas con los pies altos",musculo:"Pierna",series:3,reps:12,descanso:120,rir:2,inc:5,tip:"Pies altos y separados en la plataforma (así trabaja más el glúteo). Baja hasta 90° sin despegar la zona lumbar del respaldo."},
+    {id:"E13",nombre:"Prensa de piernas con los pies altos",musculo:"Pierna",series:3,reps:12,descanso:120,rir:2,inc:5,tip:"Pies altos y separados en la plataforma (así trabaja más el glúteo). Baja hasta 90° sin despegar la zona lumbar del respaldo."},
     {id:"W14",nombre:"Patada de glúteo en polea",musculo:"Glúteo",series:2,reps:12,descanso:60,rir:1,inc:1,tip:"Tobillera en la polea baja. Lleva la pierna hacia atrás apretando el glúteo, sin arquear la espalda. Las repeticiones son por pierna."},
-    {id:"W15",nombre:"Remo con mancuerna a una mano",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Rodilla y mano apoyadas en el banco. Tira de la mancuerna hacia la cadera con la espalda recta. Repeticiones por brazo."},
-    {id:"W16",nombre:"Press inclinado con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Banco inclinado a unos 30°. Baja las mancuernas a la parte alta del pecho y empuja."},
-    {id:"W17",nombre:"Extensión de tríceps en polea alta",musculo:"Tríceps",series:2,reps:12,descanso:60,rir:1,inc:2.5,tip:"Codos pegados a los costados. Estira los brazos hacia abajo y vuelve controlando."},
+    {id:"E15",nombre:"Remo con mancuerna a una mano",musculo:"Espalda",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Rodilla y mano apoyadas en el banco. Tira de la mancuerna hacia la cadera con la espalda recta. Repeticiones por brazo."},
+    {id:"E9",nombre:"Press inclinado con mancuernas",musculo:"Pecho",series:3,reps:10,descanso:90,rir:2,inc:1,tip:"Banco inclinado a unos 30°. Baja las mancuernas a la parte alta del pecho y empuja. Trabaja pecho, hombros y tríceps a la vez."},
+    {id:"E6",nombre:"Extensión de tríceps en polea alta",musculo:"Tríceps",series:2,reps:12,descanso:60,rir:1,inc:2.5,tip:"Codos pegados a los costados. Estira los brazos hacia abajo y vuelve controlando."},
     {id:"W18",nombre:"Crunch en polea alta de rodillas",musculo:"Core",series:3,reps:12,descanso:60,rir:1,inc:2.5,tip:"De rodillas frente a la polea, con la cuerda junto a la cabeza. Enrolla el tronco hacia abajo apretando el abdomen."}
   ]}
 };
-const RUTINA_VER = 2;
+const RUTINA_VER = 4;
+// Ejercicios que son los mismos que en la rutina anterior: conservan su id para no perder el historial
+const MAPA_IDS = {W3:"E14",W4:"E8",W5:"E16",W9:"E10",W10:"E4",W11:"E12",W13:"E13",W15:"E15",W16:"E9",W17:"E6"};
 // Las 6 comidas del plan (kcal y proteína aproximadas)
 const DEFAULT_FAVS = [
   {id:"f1",nombre:"Desayuno: 3 huevos + 2 pan integral + plátano",kcal:475,prot:27},
@@ -650,17 +652,24 @@ function coachClick(b){
   return false;
 }
 
-/* Temporizador de descanso */
-let tLeft=0,tInt=null,actx=null;
-function beep(){ try{ if(!actx) return; [0,.25,.5].forEach(d=>{const o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=880; o.connect(g); g.connect(actx.destination); g.gain.setValueAtTime(.25,actx.currentTime+d); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d+.2); o.start(actx.currentTime+d); o.stop(actx.currentTime+d+.22);}); }catch(e){} try{ navigator.vibrate&&navigator.vibrate([200,100,200]); }catch(e){} }
-function drawTimer(){ const v=Math.max(tLeft,0); $("#timer-t").textContent=`${Math.floor(v/60)}:${String(v%60).padStart(2,"0")}`; }
-function startTimer(sec,name){
-  try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); }catch(e){}
-  tLeft=sec; $("#timer-lab").textContent="Descanso · "+name; $("#timer").className="show"; drawTimer();
-  clearInterval(tInt); tInt=setInterval(()=>{ tLeft--; drawTimer(); if(tLeft<=0){ clearInterval(tInt); $("#timer").className="show done"; $("#timer-lab").textContent="¡A por la siguiente serie!"; beep(); } },1000);
+/* Temporizador de descanso: cuenta con la hora real, así sigue bien aunque bloquees el móvil o cambies de app */
+let tEnd=0,tInt=null,actx=null,tDone=false;
+const tLeftNow=()=>Math.ceil((tEnd-Date.now())/1000);
+function beep(){ try{ if(!actx) return; actx.resume&&actx.resume(); [0,.25,.5].forEach(d=>{const o=actx.createOscillator(),g=actx.createGain(); o.frequency.value=880; o.connect(g); g.connect(actx.destination); g.gain.setValueAtTime(.25,actx.currentTime+d); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+d+.2); o.start(actx.currentTime+d); o.stop(actx.currentTime+d+.22);}); }catch(e){} try{ navigator.vibrate&&navigator.vibrate([200,100,200]); }catch(e){} }
+function drawTimer(){ const v=Math.max(tLeftNow(),0); $("#timer-t").textContent=`${Math.floor(v/60)}:${String(v%60).padStart(2,"0")}`; }
+function tickTimer(){
+  drawTimer();
+  if(!tDone&&tLeftNow()<=0){ tDone=true; clearInterval(tInt); $("#timer").className="show done"; $("#timer-lab").textContent="¡A por la siguiente serie!"; beep(); }
 }
-$("#timer-plus").onclick=()=>{ if(tLeft<=0) startTimer(15,"extra"); else { tLeft+=15; drawTimer(); } };
-$("#timer-stop").onclick=()=>{ clearInterval(tInt); $("#timer").className=""; };
+function startTimer(sec,name){
+  try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); actx.resume&&actx.resume(); }catch(e){}
+  tEnd=Date.now()+sec*1000; tDone=false;
+  $("#timer-lab").textContent="Descanso · "+name; $("#timer").className="show"; drawTimer();
+  clearInterval(tInt); tInt=setInterval(tickTimer,500);
+}
+$("#timer-plus").onclick=()=>{ if(tDone||tLeftNow()<=0) startTimer(15,"extra"); else { tEnd+=15000; drawTimer(); } };
+$("#timer-stop").onclick=()=>{ clearInterval(tInt); tDone=true; $("#timer").className=""; };
+document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&$("#timer").classList.contains("show")&&!tDone) tickTimer(); });
 
 /* =====================================================================
    CALORÍAS: comida, actividad y balance
@@ -1346,8 +1355,12 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>showTab(b.datas
 D=loadData();
 let rutinaMigrada=false;
 if((D.rutinaVer||0)<RUTINA_VER){
+  // si ya se usaron ids W (versión anterior de esta rutina), pasarlos a los ids de siempre
+  D.sesiones.forEach(s=>{ if(!s.sets) return; Object.keys(s.sets).forEach(k=>{ const nk=MAPA_IDS[k]; if(nk){ s.sets[nk]=(s.sets[nk]||[]).concat(s.sets[k]); delete s.sets[k]; } }); });
+  Object.keys(MAPA_IDS).forEach(k=>delete D.archivo[k]);
   const nuevos=new Set(DIAS.flatMap(d=>DEFAULT_RUTINA[d].ejercicios.map(e=>e.id)));
   DIAS.forEach(d=>(D.rutina[d]?.ejercicios||[]).forEach(e=>{ if(!nuevos.has(e.id)) D.archivo[e.id]={nombre:e.nombre,musculo:e.musculo}; }));
+  nuevos.forEach(id=>delete D.archivo[id]);
   D.rutina=clone(DEFAULT_RUTINA); D.rutinaVer=RUTINA_VER;
   if(!D.perfil.sexo) D.perfil.sexo="m";
   try{ localStorage.removeItem("diarioFuerza.draft"); }catch(e){}
