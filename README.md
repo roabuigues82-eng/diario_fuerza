@@ -11,6 +11,7 @@ App web para registrar mis entrenamientos Full Body (lunes, miércoles y viernes
 - **Calorías**: buscador con ~150 alimentos y platos españoles (lentejas, tortilla, pizza, bocadillos…) en raciones caseras (plato, rebanada, vaso, puñado o gramos) que **calcula las kcal y la proteína solo**; "Tu plato" para juntar varios alimentos en una comida y guardarla como comida rápida; comidas usadas hace poco; proteína, actividad en casa y en el trabajo, y **balance comido − gastado**. Avisa si gastas más de lo que comes y sugiere qué comida añadir para compensar.
 - **Historial**: editar o borrar sesiones, descargar/importar copias de seguridad en JSON (incluye rutina, calorías, actividad, peso y ajustes).
 - **Ajustes**: perfil (para calcular el gasto), editor de rutina (cambiar, añadir, quitar y reordenar ejercicios) y comidas favoritas.
+- **3 objetivos**: ganar músculo, tonificar (recomposición) o perder grasa sin perder músculo. Calcula calorías y proteína recomendadas (con mínimos de seguridad) y adapta el balance, los avisos, el ritmo de peso y las medidas al objetivo.
 - **Avisos automáticos** al abrir la app (medidas cada 4 semanas, semana de descarga cada ~7 semanas, y además): entreno del día, entrenos de la semana, si vas retrasada con la comida según la hora, balance de ayer, pesaje semanal, ajuste de calorías según la tendencia del peso (con botón para aplicarlo) y ejercicios estancados.
 - **Resumen de los últimos 7 días** en Progreso.
 - **Importa energía activa, pasos y peso de la app Salud del iPhone** mediante un Atajo.
