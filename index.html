@@ -13,6 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@600;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{
   --bg:#0e1011;--card:#16191b;--card2:#1c2023;--line:#272c2f;
@@ -503,8 +504,10 @@ function loadData(){
   if(v1){ d.rutinaVer=0; d.onboarded=true; d.favoritos=clone(DEFAULT_FAVS); d.sesiones=v1.sessions||[]; d.pesos=v1.weights||[]; }
   return d;
 }
-function persist(){
+function persist(silencioso){
+  if(!silencioso) D.modificado=Date.now();
   if(!lsSet(KEY,D)){ toast("No se pudo guardar en este navegador",true); return false; }
+  if(!silencioso) programarSubida();
   return true;
 }
 function commit(){ persist(); renderCurrent(); }
@@ -652,7 +655,7 @@ function coachTips(){
   // 1. Entreno de hoy y de la semana
   const diaHoy=map[now.getDay()];
   const hoyHecho=ses.some(s=>s.fecha===today);
-  if(diaHoy&&!hoyHecho) tips.push({t:"info",h:`🏋️ Hoy toca entreno: <b>${diaHoy}</b> (${esc(D.rutina[diaHoy].enfoque)}).`});
+  if(diaHoy&&!hoyHecho) tips.push({t:"info",h:`🏋️ Hoy toca <b>${esc(D.rutina[diaHoy].enfoque.charAt(0).toLowerCase()+D.rutina[diaHoy].enfoque.slice(1))}</b>. ¡A por ello!`});
   if(hoyHecho) tips.push({t:"good",h:"✅ Entreno de hoy registrado. ¡Bien hecho!"});
   const wk=weekStart(today); let previstos=0;
   for(let i=0;i<daysBetween(wk,today);i++){ const d=new Date(addDays(wk,i)+"T12:00").getDay(); if(map[d]) previstos++; }
@@ -1383,6 +1386,116 @@ function cargarPlantilla(key,cardio){
   commit(); toast(`Rutina cargada: ${pl.nombre}. Tu historial se conserva.`);
 }
 /* =====================================================================
+   CUENTA Y COPIA EN LA NUBE (Supabase)
+   ===================================================================== */
+// ⚠️ Pega aquí los datos de tu proyecto (Supabase → Project Settings → API). La clave "anon" es pública: la protección la dan las reglas (RLS).
+const SUPABASE_URL = "";
+const SUPABASE_ANON_KEY = "";
+const NUBE_OK = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
+let sb=null, sbUser=null, subidaTimer=null, nubeEstado="", ultimaBajada=0, wizardTrasLogin=false;
+const SYNC_KEY="diarioFuerza.sync";
+function syncInfo(){ return lsGet(SYNC_KEY)||{}; }
+function setSync(o){ lsSet(SYNC_KEY,{...syncInfo(),...o}); }
+function pintarEstado(){
+  if(sbUser&&nubeEstado==="ok") setStatus("ok","☁️ Guardado en la nube");
+  else if(sbUser&&nubeEstado==="pendiente") setStatus("ok","☁️ Guardando…");
+  else if(sbUser&&nubeEstado==="error") setStatus("bad","Sin conexión: se subirá luego");
+  else setStatus("ok","Guardado en este dispositivo");
+}
+async function initNube(){
+  if(!NUBE_OK||!window.supabase) return;
+  try{
+    sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:true,autoRefreshToken:true}});
+    const {data}=await sb.auth.getSession(); sbUser=data&&data.session?data.session.user:null;
+    sb.auth.onAuthStateChange((_ev,s)=>{ sbUser=s?s.user:null; pintarEstado(); if(tab==="ajustes") renderSettings(); });
+    if(sbUser) await bajar();
+    pintarEstado();
+    document.addEventListener("visibilitychange",()=>{ if(!document.hidden&&sbUser&&Date.now()-ultimaBajada>30000) bajar(); });
+  }catch(e){ console.warn("Nube no disponible",e); }
+}
+function programarSubida(){ if(!sb||!sbUser) return; nubeEstado="pendiente"; pintarEstado(); clearTimeout(subidaTimer); subidaTimer=setTimeout(subir,2000); }
+async function subir(){
+  if(!sb||!sbUser) return false;
+  try{
+    const mod=D.modificado||Date.now();
+    const {error}=await sb.from("datos_usuario").upsert({user_id:sbUser.id,datos:D,actualizado:new Date(mod).toISOString()});
+    if(error) throw error;
+    setSync({uid:sbUser.id,lastSync:mod}); nubeEstado="ok"; pintarEstado(); return true;
+  }catch(e){ console.warn(e); nubeEstado="error"; pintarEstado(); return false; }
+}
+async function bajar(){
+  if(!sb||!sbUser) return;
+  ultimaBajada=Date.now();
+  try{
+    const {data,error}=await sb.from("datos_usuario").select("datos").eq("user_id",sbUser.id).maybeSingle();
+    if(error) throw error;
+    const s=syncInfo(), remoto=data&&data.datos?data.datos:null;
+    if(!remoto){ if(D.onboarded) await subir(); else { nubeEstado="ok"; pintarEstado(); } return; }
+    const rMod=remoto.modificado||0, lMod=D.modificado||0, last=s.uid===sbUser.id?(s.lastSync||0):0;
+    const localConDatos=D.onboarded&&(D.sesiones.length||D.pesos.length||Object.keys(D.dias).length);
+    if(s.uid!==sbUser.id){
+      // primera vez en este dispositivo con esta cuenta
+      if(localConDatos){ importData(remoto,"merge"); persist(true); D.modificado=Date.now(); lsSet(KEY,D); await subir(); toast("Tus datos de este móvil y los de tu cuenta se han unido"); }
+      else { D=normalize(remoto); D.onboarded=true; lsSet(KEY,D); setSync({uid:sbUser.id,lastSync:rMod}); toast("Datos de tu cuenta recuperados ☁️"); }
+    } else if(rMod>last&&lMod>last){ importData(remoto,"merge"); D.modificado=Date.now(); lsSet(KEY,D); await subir(); }
+    else if(rMod>last){ D=normalize(remoto); D.onboarded=true; lsSet(KEY,D); setSync({lastSync:rMod}); }
+    else if(lMod>last){ await subir(); }
+    nubeEstado="ok"; pintarEstado(); form=null; renderCurrent();
+    if(D.onboarded&&wizardTrasLogin&&$("#wizard").classList.contains("show")) cerrarWizard();
+  }catch(e){ console.warn(e); nubeEstado="error"; pintarEstado(); }
+}
+function traducirError(e){
+  const m=String(e&&e.message||e);
+  if(/Invalid login credentials/i.test(m)) return "Email o contraseña incorrectos";
+  if(/already registered|already been registered/i.test(m)) return "Ya existe una cuenta con ese email: pulsa «Entrar»";
+  if(/Password should be at least/i.test(m)) return "La contraseña debe tener al menos 8 caracteres";
+  if(/Email not confirmed/i.test(m)) return "Confirma tu email antes de entrar (revisa tu bandeja de entrada)";
+  if(/rate limit/i.test(m)) return "Demasiados intentos: espera unos minutos";
+  if(/Failed to fetch|NetworkError|Load failed/i.test(m)) return "Sin conexión a internet";
+  return m;
+}
+function cuentaHTML(){
+  if(!NUBE_OK) return "";
+  if(!sb) return `<div class="card"><div class="h2">Tu cuenta</div><div class="note">No se ha podido cargar el servicio de cuentas. Revisa tu conexión y vuelve a abrir la app.</div></div>`;
+  if(sbUser){
+    const s=syncInfo();
+    return `<div class="card" id="cuenta-card"><div class="h2">Tu cuenta</div>
+      <div>☁️ Conectada como <b>${esc(sbUser.email)}</b></div>
+      <div class="note" style="margin-top:4px">Tus datos se guardan en este móvil y en la nube. Último guardado: ${s.lastSync?new Date(s.lastSync).toLocaleString("es-ES",{dateStyle:"short",timeStyle:"short"}):"todavía no"}.</div>
+      <div class="btns"><button class="btn" id="nube-sync">Sincronizar ahora</button><button class="btn" id="nube-out">Cerrar sesión</button><button class="btn danger" id="nube-del">Borrar mis datos de la nube</button></div>
+      <div class="note" style="margin-top:8px">Al cerrar sesión, los datos siguen en este móvil. "Borrar mis datos de la nube" no borra lo que hay en el móvil.</div></div>`;
+  }
+  return `<div class="card" id="cuenta-card"><div class="h2">Tu cuenta</div>
+    <div class="note" style="margin-bottom:10px">Crea una cuenta para guardar tus datos en la nube: no los perderás si cambias de móvil o borras la app, y podrás usarla en varios dispositivos.</div>
+    <div class="grid2"><label class="f">Email<input type="text" inputmode="email" autocomplete="email" id="nube-email"></label>
+    <label class="f">Contraseña (mín. 8)<input type="password" autocomplete="current-password" id="nube-pass" style="background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;color:var(--text);min-width:0"></label></div>
+    <div class="btns"><button class="btn pri" id="nube-in">Entrar</button><button class="btn" id="nube-up">Crear cuenta</button></div>
+    <div class="note" style="margin-top:8px">Tus datos solo los puedes ver tú. Al crear la cuenta, lo que ya tienes en este móvil se sube a la nube.</div></div>`;
+}
+async function accionCuenta(id,b){
+  if(id==="nube-in"||id==="nube-up"){
+    const email=$("#nube-email").value.trim(), pass=$("#nube-pass").value;
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ toast("Escribe un email válido",true); return; }
+    if(pass.length<8){ toast("La contraseña debe tener al menos 8 caracteres",true); return; }
+    b.disabled=true;
+    try{
+      const r= id==="nube-in" ? await sb.auth.signInWithPassword({email,password:pass}) : await sb.auth.signUp({email,password:pass});
+      if(r.error) throw r.error;
+      if(!r.data.session){ toast("Cuenta creada: revisa tu email para confirmarla y después pulsa «Entrar»"); b.disabled=false; return; }
+      sbUser=r.data.session.user; toast(id==="nube-in"?"Sesión iniciada ☁️":"Cuenta creada ☁️"); await bajar();
+      if(!D.onboarded) abrirWizard(); else renderCurrent();
+    }catch(e){ toast(traducirError(e),true); b.disabled=false; }
+  } else if(id==="nube-sync"){ b.disabled=true; await bajar(); toast(nubeEstado==="ok"?"Sincronizado ☁️":"No se pudo sincronizar",nubeEstado!=="ok"); renderCurrent(); }
+  else if(id==="nube-out"){ await sb.auth.signOut(); sbUser=null; nubeEstado=""; pintarEstado(); toast("Sesión cerrada. Tus datos siguen en este móvil"); renderCurrent(); }
+  else if(id==="nube-del"){
+    if(!armed(b,"¿Seguro? Se borran de la nube")) return;
+    const {error}=await sb.from("datos_usuario").delete().eq("user_id",sbUser.id);
+    if(error){ toast("No se pudo borrar",true); return; }
+    await sb.auth.signOut(); sbUser=null; lsSet(SYNC_KEY,{}); nubeEstado=""; pintarEstado(); toast("Datos borrados de la nube. En este móvil siguen guardados"); renderCurrent();
+  }
+}
+
+/* =====================================================================
    CUESTIONARIO DE BIENVENIDA (primera vez o desde Ajustes)
    ===================================================================== */
 const WZ={paso:0,d:{}};
@@ -1399,7 +1512,8 @@ function renderWizard(){
   const opt=(attr,val,on,t,sub)=>`<button class="wz-opt ${on?"on":""}" data-${attr}="${val}"><b>${t}</b>${sub?`<span>${sub}</span>`:""}</button>`;
   let h=`<div class="wz-steps">${Array.from({length:n},(_,i)=>`<i class="${i<=s?"on":""}"></i>`).join("")}</div>`;
   if(s===0) h+=`<div class="wz-title">Te damos la bienvenida a Diario de <span style="color:var(--acc)">Fuerza</span></div>
-    <p class="note" style="font-size:15px">5 preguntas rápidas para preparar tu rutina, tus calorías y tu proteína. Tus datos se guardan solo en este móvil.</p>
+    <p class="note" style="font-size:15px">5 preguntas rápidas para preparar tu rutina, tus calorías y tu proteína.</p>
+    ${NUBE_OK?`<button class="btn sm" data-wzlogin="1" style="margin:4px 0 6px">¿Ya tienes cuenta? Entra y recupera tus datos</button>`:""}
     <div class="grid2" style="margin-top:14px">
       <label class="f" style="grid-column:1/-1">¿Cómo te llamas? (opcional)<input type="text" id="wz-nombre" value="${esc(d.nombre)}" autocomplete="given-name"></label>
       <div style="grid-column:1/-1"><div class="note" style="margin-bottom:6px">Sexo (para calcular tu gasto)</div><div class="seg"><button data-wzsexo="m" class="${d.sexo==="m"?"on":""}">Mujer</button><button data-wzsexo="h" class="${d.sexo==="h"?"on":""}">Hombre</button></div></div>
@@ -1447,6 +1561,7 @@ $("#wizard").addEventListener("click",e=>{
   if(b.dataset.wzfoco){ d.foco=b.dataset.wzfoco; renderWizard(); return; }
   if(b.dataset.wzact){ d.act=b.dataset.wzact; renderWizard(); return; }
   if(b.dataset.wzclose){ cerrarWizard(); return; }
+  if(b.dataset.wzlogin){ wizardTrasLogin=true; cerrarWizard(); showTab("ajustes"); setTimeout(()=>{ const c=$("#cuenta-card"); if(c) c.scrollIntoView({behavior:"smooth"}); const e=$("#nube-email"); if(e) e.focus(); },100); return; }
   if(b.dataset.wznav){
     const dir=+b.dataset.wznav;
     if(dir>0){
@@ -1482,7 +1597,7 @@ function renderSettings(){
   if(!rutEdit) rutEdit=clone(D.rutina);
   const p=D.perfil;
   const rec=recomendacion();
-  let h=`<div class="card"><div class="row" style="justify-content:space-between"><div class="h2" style="margin:0">Tu objetivo</div><button class="btn sm" id="wz-open">Repetir cuestionario</button></div><div style="height:10px"></div>
+  let h=cuentaHTML()+`<div class="card"><div class="row" style="justify-content:space-between"><div class="h2" style="margin:0">Tu objetivo</div><button class="btn sm" id="wz-open">Repetir cuestionario</button></div><div style="height:10px"></div>
     <div class="seg" id="obj-seg">${Object.entries(OBJETIVOS).map(([k,o])=>`<button data-obj="${k}" class="${objKey()===k?"on":""}">${o.nombre}</button>`).join("")}</div>
     <div class="note" style="margin-top:8px">Lo ideal para este objetivo: ${OBJETIVOS[objKey()].ritmoTxt}.</div>
     <div class="h2" style="margin-top:16px;font-size:17px">¿Cuántos días puedes entrenar a la semana?</div>
@@ -1585,6 +1700,7 @@ $("#tab-ajustes").addEventListener("click",e=>{
     if($("#p-deficit")) np.deficit=Math.max(200,Math.min(700,num(g("deficit"))||400));
     np.fuenteAct=g("fuenteAct"); np.relojGym=$("#p-relojGym").checked;
     D.perfil={...D.perfil,...np}; commit(); toast("Perfil guardado");
+  } else if(b.id&&b.id.startsWith("nube-")){ accionCuenta(b.id,b);
   } else if(b.id==="wz-open"){ abrirWizard();
   } else if(b.dataset.plantilla){
     if(!armed(b,"¿Seguro? Pulsa otra vez")) return;
@@ -1665,7 +1781,7 @@ if((D.rutinaVer||0)<RUTINA_VER){
   try{ localStorage.removeItem("diarioFuerza.draft"); }catch(e){}
   rutinaMigrada=D.sesiones.length>0||true;
 }
-if(lsSet("diarioFuerza.test",1)){ try{localStorage.removeItem("diarioFuerza.test");}catch(e){} setStatus("ok","Guardado en este dispositivo"); persist(); }
+if(lsSet("diarioFuerza.test",1)){ try{localStorage.removeItem("diarioFuerza.test");}catch(e){} setStatus("ok","Guardado en este dispositivo"); persist(true); }
 else { setStatus("bad","Sin almacenamiento"); $("#banner").innerHTML='<div class="banner bad">Este navegador no permite guardar datos (¿modo incógnito?). Lo que registres se perderá al cerrar.</div>'; }
 let startTab=lsGet("diarioFuerza.tab")||"entrenar";
 if(/(activa|pasos|peso)=/.test(location.search)){
@@ -1675,6 +1791,7 @@ if(/(activa|pasos|peso)=/.test(location.search)){
 }
 showTab(startTab);
 if(!D.onboarded) abrirWizard();
+initNube();
 if(rutinaMigrada&&D.sesiones.length) setTimeout(()=>toast("Rutina nueva cargada. Tus entrenos anteriores siguen en Historial y Progreso."),600);
 if("serviceWorker" in navigator && location.protocol==="https:"){ navigator.serviceWorker.register("sw.js").catch(()=>{}); }
 </script>

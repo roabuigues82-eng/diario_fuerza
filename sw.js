@@ -1,5 +1,5 @@
 // Service worker: permite abrir la app sin conexión (por ejemplo, en el gimnasio).
-const CACHE = "diario-fuerza-v12";
+const CACHE = "diario-fuerza-v14";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg",
   "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"];
 
@@ -13,6 +13,7 @@ self.addEventListener("activate", e => {
 // Red primero (para recibir actualizaciones); si no hay conexión, usa la caché.
 self.addEventListener("fetch", e => {
   if (e.request.method !== "GET") return;
+  if (new URL(e.request.url).hostname.endsWith("supabase.co")) return; // los datos de la cuenta nunca se guardan en caché
   e.respondWith(
     fetch(e.request).then(res => {
       const copy = res.clone();
