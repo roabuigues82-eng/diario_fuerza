@@ -1389,8 +1389,8 @@ function cargarPlantilla(key,cardio){
    CUENTA Y COPIA EN LA NUBE (Supabase)
    ===================================================================== */
 // ⚠️ Pega aquí los datos de tu proyecto (Supabase → Project Settings → API). La clave "anon" es pública: la protección la dan las reglas (RLS).
-const SUPABASE_URL = "";
-const SUPABASE_ANON_KEY = "";
+const SUPABASE_URL = "https://pzkznsisxgcyiemdfutw.supabase.co/rest/v1/";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB6a3puc2lzeGdjeWllbWRmdXR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU1OTk4NzEsImV4cCI6MjExMTE3NTg3MX0.eqYpIDCenlm7wwXrzzCNJnMBoUGR4jXL17AcuCA8v9c";
 const NUBE_OK = !!(SUPABASE_URL && SUPABASE_ANON_KEY);
 let sb=null, sbUser=null, subidaTimer=null, nubeEstado="", ultimaBajada=0, wizardTrasLogin=false;
 const SYNC_KEY="diarioFuerza.sync";
