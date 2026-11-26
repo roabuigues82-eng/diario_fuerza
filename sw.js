@@ -1,6 +1,6 @@
 // Service worker: permite abrir la app sin conexión (por ejemplo, en el gimnasio).
-const CACHE = "diario-fuerza-v14";
-const ASSETS = ["./", "./index.html", "./manifest.json", "./icon.svg",
+const CACHE = "diario-fuerza-v16";
+const ASSETS = ["./", "./index.html", "./config.js", "./manifest.json", "./icon.svg",
   "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"];
 
 self.addEventListener("install", e => {
